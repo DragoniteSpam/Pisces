@@ -20,17 +20,21 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btOverlappingPairCache;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
@@ -162,6 +166,20 @@ public final class Pisces extends ApplicationAdapter {
 		/*
 		 * Test stuff
 		 */
+		
+		btSphereShape sphere=new btSphereShape(2.5f);
+		btCollisionObject object1=new btCollisionObject();
+		btCollisionObject object2=new btCollisionObject();
+		object1.setCollisionShape(sphere);
+		object2.setCollisionShape(sphere);
+		object1.setWorldTransform(new Matrix4(new Vector3(0f, 0f, 0f), new Quaternion(0f, 0f, 0f, 0f), new Vector3(1f, 1f, 1f)));
+		object2.setWorldTransform(new Matrix4(new Vector3(1f, 0f, 0f), new Quaternion(0f, 0f, 0f, 0f), new Vector3(1f, 1f, 1f)));
+		object1.setUserValue(0);
+		object2.setUserValue(1);
+		object1.setCollisionFlags(WorldObject.COLLISION_PRIMARY);
+		object2.setCollisionFlags(WorldObject.COLLISION_PRIMARY);
+		world.addCollisionObject(object1, WorldObject.COLLISION_PRIMARY, WorldObject.COLLISION_EVERYTHING);
+		world.addCollisionObject(object2, WorldObject.COLLISION_PRIMARY, WorldObject.COLLISION_EVERYTHING);
 	}
 
 	@Override

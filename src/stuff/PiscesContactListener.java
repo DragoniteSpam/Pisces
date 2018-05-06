@@ -15,10 +15,10 @@ public class PiscesContactListener extends ContactListener {
 		return true;
 	}*/
 	
-	public boolean onContactAdded (int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
+	public boolean onContactAdded (int userValue0, int partId0, int index0, boolean match0, int userValue1, int partId1, int index1, boolean match1) {
 		System.out.println("Collision detected between "+userValue0+" and "+userValue1);
-		WorldObject.getByID(userValue0).moveToPrevious();
-		WorldObject.getByID(userValue1).moveToPrevious();
+		/*WorldObject.getByID(userValue0).moveToPrevious();
+		WorldObject.getByID(userValue1).moveToPrevious();*/
 		return true;
 	}
 }

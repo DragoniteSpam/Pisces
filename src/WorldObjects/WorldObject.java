@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.Pisces;
@@ -30,14 +31,14 @@ import gamedata.PiscesModel;
 import stuff.CameraProperties;
 
 public class WorldObject {
-	public static final int COLLISION_DEFAULT=1;
-	public static final int COLLISION_PRIMARY=2;
-	public static final int COLLISION_PRIMARY_DEFAULT=3;
-	public static final int COLLISION_EVENT=4;
-	public static final int COLLISION_EVENT_DEFAULT=5;
-	public static final int COLLISION_DEAD=8;
-	public static final int COLLISION_DEAD_DEFAULT=9;
-	public static final int COLLISION_EVERYTHING=255;
+	public static final int COLLISION_DEFAULT=1<<8;
+	public static final int COLLISION_PRIMARY=1<<9;
+	public static final int COLLISION_PRIMARY_DEFAULT=1<<9|1<<8;
+	public static final int COLLISION_EVENT=1<<10;
+	public static final int COLLISION_EVENT_DEFAULT=1<<10|1<<8;
+	public static final int COLLISION_DEAD=1<<11;
+	public static final int COLLISION_DEAD_DEFAULT=1<<11|1<<8;
+	public static final int COLLISION_EVERYTHING=COLLISION_DEFAULT|COLLISION_PRIMARY|COLLISION_EVENT|COLLISION_DEAD;
 	
 	public static final float DEFAULT_EYE_HEIGHT=25;
 	
@@ -53,6 +54,7 @@ public class WorldObject {
 	protected float pitch;
 	protected Vector3 scale;
 	protected float eyeHeight;
+	protected final ClosestRayResultCallback callback;
 	
 	protected int id;
 	protected String name;
@@ -91,10 +93,11 @@ public class WorldObject {
 		this.collisionObject=new btCollisionObject();
 		this.collisionObject.setCollisionShape(this.model.getCollisionModel());
 		this.collisionObject.setUserValue(this.id);
-		this.collisionObject.setCollisionFlags(this.collisionObject.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK/*COLLISION_PRIMARY_DEFAULT*/);
-		Pisces.me().getCollisionWorld().addCollisionObject(this.collisionObject);
+		this.collisionObject.setCollisionFlags(this.collisionObject.getCollisionFlags()|btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		Pisces.me().getCollisionWorld().addCollisionObject(this.collisionObject, COLLISION_PRIMARY_DEFAULT, COLLISION_EVERYTHING);
 		this.collisionObject.setWorldTransform(new Matrix4(this.position, this.orientation, this.scale));
 		
+		this.callback=new ClosestRayResultCallback(this.previous, this.position);
 		all.add(this);
 	}
 	
@@ -216,6 +219,10 @@ public class WorldObject {
 	
 	public static WorldObject getByID(int id) {
 		return ids.get(id);
+	}
+	
+	public static boolean getIDExists(int id) {
+		return ids.containsKey(id);
 	}
 	
 	public static void disposeAll() {

@@ -34,15 +34,39 @@ public class WorldEntity extends WorldObject {
 	}
 
 	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
-		this.previous.set(this.position);
-
 		this.position.set(position.x + xspeed, position.y + yspeed, position.z + zspeed);
-		if (!(this.position.x==this.previous.x&&this.position.y==this.previous.y&&this.position.z==this.previous.z)) {
+		
+		int flags=this.collisionObject.getCollisionFlags();
+		//this.collisionObject.setCollisionFlags(0);
+		//this.collisionObject.set
+		
+		callback.setCollisionObject(null);
+		callback.setClosestHitFraction(1f);
+		/*callback.setCollisionFilterMask(flags);*/
+		/*callback.setCollisionFilterGroup(flags);*/
+		
+		world.rayTest(this.previous,  this.position,  callback);
+		
+		if (callback.hasHit()) {
+			if (WorldObject.getIDExists(callback.getCollisionObject().getUserValue())) {
+				System.out.println(name+" has hit "+WorldObject.getByID(callback.getCollisionObject().getUserValue()).getName());
+			} else {
+				System.out.println(name+" has hti one of the test objects");
+			}
+		}
+		
+		if (!(this.position.x == this.previous.x && this.position.y == this.previous.y
+				&& this.position.z == this.previous.z)) {
 			this.collisionObject.getWorldTransform().setTranslation(this.position);
 		}
-		if (!(this.orientation.x==this.previousOrientation.x&&this.orientation.y==this.previousOrientation.y&&this.orientation.z==this.previousOrientation.z&&this.orientation.w==this.previousOrientation.w)) {
+		if (!(this.orientation.x == this.previousOrientation.x && this.orientation.y == this.previousOrientation.y
+				&& this.orientation.z == this.previousOrientation.z
+				&& this.orientation.w == this.previousOrientation.w)) {
 			this.collisionObject.getWorldTransform().set(position, orientation, scale);
 		}
+		
+		//world.addCollisionObject(this.collisionObject);
+		this.collisionObject.setCollisionFlags(flags);
 	}
 
 	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {
