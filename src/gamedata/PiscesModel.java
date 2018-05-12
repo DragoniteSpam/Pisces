@@ -27,18 +27,17 @@ public class PiscesModel extends GameData {
 		super(name);
 		all.add(this);
 		
-		this.modelVisible=null;
-		this.modelCollision=null;
-		this.modelVisibleCollision=null;
-		
-		this.cull=true;
-		this.radius=0f;
+		init();
 	}
 	
 	public PiscesModel(String name, int id) {
 		super(name, id);
 		all.add(this);
 		
+		init();
+	}
+	
+	private void init() {
 		this.modelVisible=null;
 		this.modelCollision=null;
 		this.modelVisibleCollision=null;

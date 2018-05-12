@@ -11,6 +11,12 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
+/**
+ * Class which controls input handling such as button presses and joystick axes.
+ * 
+ * @author mpeng
+ * @version 1.0.0
+ */
 public class PiscesController implements InputProcessor, ControllerListener {
 	private boolean[] keys;
 	private int keyA, keyB, keyX, keyY, keyL, keyR, keyL2, keyR2, keyLS, keyRS, keyStart, keySelect, keyUp, keyDown,
@@ -53,6 +59,8 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public static final int CONTROLLER_RIGHT_DOWN = 284;
 	public static final int CONTROLLER_RIGHT_LEFT = 285;
 	public static final int CONTROLLER_RIGHT_RIGHT = 286;
+	
+	public static final int DEBUG_DRAW_WORLD=Keys.F12;
 
 	private HashMap<Integer, Integer> buttonMap;
 	private HashMap<Integer, Integer> mouseMap;
@@ -63,6 +71,10 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	private int mouseX;
 	private int mouseY;
 
+	/**
+	 * Constructor which initializes the key code array and maps various inputs onto values in the key code array.
+	 * Also it centers the mouse cursor.
+	 */
 	public PiscesController() {
 		keys = new boolean[300];
 		for (int i = 0; i < keys.length; i++) {
@@ -161,16 +173,34 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		
 	}
 
+	/**
+	 * Code that runs when a key is pressed
+	 * 
+	 * @param keycode The code for the key which has been pressed
+	 * @return false?
+	 */
 	public boolean keyDown(int keycode) {
 		keys[keycode] = true;
 		return false;
 	}
 
+	/**
+	 * Code that runs when a key is released
+	 * 
+	 * @param keycode The code for the key which has been released
+	 * @return false?
+	 */
 	public boolean keyUp(int keycode) {
 		keys[keycode] = false;
 		return false;
 	}
 
+	/**
+	 * I honestly don't know what this is for.
+	 * 
+	 * @param character The character which was typed, I suppose
+	 * @return I give up
+	 */
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
 		return false;
@@ -706,5 +736,17 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	
 	public double getLeftStickVertical() {
 		return leftStickVertical;
+	}
+	
+	/*
+	 * Generic keys
+	 */
+	
+	/**
+	 * @param key The key to check
+	 * @return Whether the key is pressed or not
+	 */
+	public boolean get(int key) {
+		return this.keys[key];
 	}
 }

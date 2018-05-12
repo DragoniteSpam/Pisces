@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.controllers.Controllers;
@@ -18,12 +19,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
@@ -35,6 +39,7 @@ import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration
 import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btOverlappingPairCache;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
@@ -43,19 +48,41 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import WorldObjects.WorldEntity;
 import WorldObjects.WorldEntityPlayer;
 import WorldObjects.WorldObject;
+import WorldObjects.lights.WorldEntityLight;
 import gamedata.PiscesModel;
+import gamedata.PiscesSound;
+import gamedata.PiscesItemPocket;
+import screens.DebugScreen;
+import screens.HUDScreen;
 import screens.LoadingScreen;
+import screens.PauseScreen;
 import stuff.CameraProperties;
+import stuff.DebugStates;
 import stuff.GameStates;
 import stuff.PiscesContactListener;
 import stuff.PlayStates;
 import stuff.VRAContainer;
 
-public final class Pisces extends ApplicationAdapter {
+/**
+ * The central hub that manages the game loop and pretty much connects everything to everything else.
+ * 
+ * @author mpeng
+ * @version	1.0.0
+ */
+public final class Pisces extends ApplicationAdapter implements ApplicationListener {
+	/**
+	 * Whether or not debug mode is enabled.
+	 */
 	public static final boolean DEBUG = true;
+	/**
+	 * A generic Vector3 for generic purposes.
+	 */
 	public static final Vector3 position=new Vector3();
+	
 	private GameStates gameState;
 	private PlayStates playState;
+	private DebugStates debugState;
+	private boolean isPaused;
 	private static Pisces me = null;
 	
 	private AssetManager assets;
@@ -70,6 +97,9 @@ public final class Pisces extends ApplicationAdapter {
 	private Environment environment;
 
 	private LoadingScreen loadingScreen;
+	private PauseScreen pauseScreen;
+	private DebugScreen debugScreen;
+	private HUDScreen hudScreen;
 
 	private SpriteBatch spriteBatch;
 	private BitmapFont font12, font20;
@@ -81,7 +111,13 @@ public final class Pisces extends ApplicationAdapter {
 	private btBroadphaseInterface broadphase;
 	private btCollisionWorld world;
 	private PiscesContactListener contactListener;
+	private DebugDrawer debugDrawer;
+	
 
+
+	/**
+	 * Constructs a new Pisces. Sort of a singleton?
+	 */
 	public Pisces() {
 		super();
 		if (me == null) {
@@ -89,11 +125,16 @@ public final class Pisces extends ApplicationAdapter {
 		}
 	}
 
+	/**
+	 * @return The running Pisces object. Sort of a singleton.
+	 */
 	public static Pisces me() {
 		return me;
 	}
 
-	@Override
+	/**
+	 * Initializes (most) variables, begins the loading of (most) game data
+	 */
 	public void create() {
 		/*
 		 * Really important general stuff
@@ -103,6 +144,8 @@ public final class Pisces extends ApplicationAdapter {
 		gameState = GameStates.LOADING;
 		//playState = PlayStates.TITLE;
 		playState=PlayStates.PLAYING;
+		debugState=DebugStates.OFF;
+		isPaused=false;
 		spriteBatch = new SpriteBatch();
 		font12 = new BitmapFont();
 		font20 = new BitmapFont();
@@ -136,13 +179,16 @@ public final class Pisces extends ApplicationAdapter {
 
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		//environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		/*
 		 * Screens
 		 */
 
 		loadingScreen = new LoadingScreen();
+		pauseScreen=new PauseScreen();
+		debugScreen=new DebugScreen();
+		hudScreen=new HUDScreen();
 		
 		/*
 		 * The camera and things related to the camera
@@ -167,22 +213,14 @@ public final class Pisces extends ApplicationAdapter {
 		 * Test stuff
 		 */
 		
-		btSphereShape sphere=new btSphereShape(2.5f);
-		btCollisionObject object1=new btCollisionObject();
-		btCollisionObject object2=new btCollisionObject();
-		object1.setCollisionShape(sphere);
-		object2.setCollisionShape(sphere);
-		object1.setWorldTransform(new Matrix4(new Vector3(0f, 0f, 0f), new Quaternion(0f, 0f, 0f, 0f), new Vector3(1f, 1f, 1f)));
-		object2.setWorldTransform(new Matrix4(new Vector3(1f, 0f, 0f), new Quaternion(0f, 0f, 0f, 0f), new Vector3(1f, 1f, 1f)));
-		object1.setUserValue(0);
-		object2.setUserValue(1);
-		object1.setCollisionFlags(WorldObject.COLLISION_PRIMARY);
-		object2.setCollisionFlags(WorldObject.COLLISION_PRIMARY);
-		world.addCollisionObject(object1, WorldObject.COLLISION_PRIMARY, WorldObject.COLLISION_EVERYTHING);
-		world.addCollisionObject(object2, WorldObject.COLLISION_PRIMARY, WorldObject.COLLISION_EVERYTHING);
+		debugDrawer=new DebugDrawer();
+		debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+		world.setDebugDrawer(debugDrawer);
 	}
 
-	@Override
+	/**
+	 * Renders everything in the screen, as well as performs the game loop ("the Step event")
+	 */
 	public void render() {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -217,14 +255,35 @@ public final class Pisces extends ApplicationAdapter {
 			/*
 			 * The models
 			 */
-			modelBatch.begin(camera);
-			int visible=WorldObject.renderAll(modelBatch, environment);
-			modelBatch.end();
+			
+			int visible=0; 
+			if (controller.get(PiscesController.DEBUG_DRAW_WORLD)) {
+				debugDrawer.begin(camera);
+				world.debugDrawWorld();
+				debugDrawer.end();
+			} else {
+				modelBatch.begin(camera);
+				visible=WorldObject.renderAll(modelBatch, environment);
+				modelBatch.end();
+			}
+			
+			/*
+			 * The HUD layer
+			 */
+			
+			if (isPaused) {
+				pauseScreen.render(spriteBatch, frames);
+			} else {
+				hudScreen.render(spriteBatch,  frames);
+				debugScreen.render(spriteBatch, frames);
+			}
 		}
 		frames++;
 	}
 
-	@Override
+	/**
+	 * Gets rid of Bullet objects, closes streams, that sort of thing
+	 */
 	public void dispose() {
 		modelBatch.dispose();
 		spriteBatch.dispose();
@@ -241,13 +300,22 @@ public final class Pisces extends ApplicationAdapter {
 		contactListener.dispose();
 	}
 
+	/**
+	 * Code that runs when the game window is resized
+	 */
 	public void resize(int width, int height) {
 	}
 
+	/**
+	 * Code that runs when the game is paused (not used on Desktop)
+	 */
 	public void pause() {
 
 	}
 
+	/**
+	 * Code that runs when the game is resumed (not used on Desktop)
+	 */
 	public void resume() {
 
 	}
@@ -256,6 +324,9 @@ public final class Pisces extends ApplicationAdapter {
 		assets=new AssetManager();
 		// @warning This may not work when the project is built, depending on the way the jar links everything together!
 		loadAssetModels(Gdx.files.internal("../pisces-core/assets/models/"));
+		loadAssetSounds(Gdx.files.internal("../pisces-core/assets/sounds/"));
+		PiscesItemPocket.createItemPockets();
+		Text.load("en");
 	}
 	
 	private void loadAssetModels(FileHandle root) {
@@ -265,6 +336,17 @@ public final class Pisces extends ApplicationAdapter {
 				loadAssetModels(f);
 			} else {
 				assets.load(f.path(), Model.class);
+			}
+		}
+	}
+	
+	private void loadAssetSounds(FileHandle root) {
+		FileHandle[] handles=root.list();
+		for (FileHandle f : handles) {
+			if (f.isDirectory()){
+				loadAssetSounds(f);
+			} else {
+				PiscesSound.addSound(Gdx.audio.newSound(f), f.name());
 			}
 		}
 	}
@@ -286,32 +368,54 @@ public final class Pisces extends ApplicationAdapter {
 		}
 		
 		new WorldEntity(new Vector3(96f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("barrel.g3db"), "Barrel");
-		new WorldEntity(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
+		WorldEntityLight light=new WorldEntityLight(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
+		light.setLightColor(Color.WHITE);
+		light.setLightIntensity(1024f);
+		light.setLightOffset(0f, 60f, 0f);
+		light.setLight(environment);
 		camera.setFollowing(new WorldEntityPlayer(new Vector3(0f, 0f, 0f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("npc.g3db"), "Player"));
 		camera.setCameraThirdPerson();
 		//camera.setCameraFirstPerson();
 	}
 
+	/**
+	 * @return The size-twelve game font
+	 */
 	public BitmapFont getFont12() {
 		return font12;
 	}
 
+	/**
+	 * @return The size-twenty game font
+	 */
 	public BitmapFont getFont20() {
 		return font20;
 	}
 	
+	/**
+	 * @return The input-handling object
+	 */
 	public PiscesController getController() {
 		return controller;
 	}
 	
+	/**
+	 * @return The game settings device
+	 */
 	public Settings getSettings() {
 		return settings;
 	}
 	
+	/**
+	 * @return The collision world
+	 */
 	public btCollisionWorld getCollisionWorld() {
 		return world;
 	}
 	
+	/**
+	 * @return The 3D camera
+	 */
 	public PiscesCamera getCamera() {
 		return camera;
 	}
