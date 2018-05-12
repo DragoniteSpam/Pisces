@@ -2,7 +2,6 @@ package com.pisces;
 
 import java.util.ArrayList;
 
-<<<<<<< HEAD
 /**
  * Various tools used in various places in the game.
  * 
@@ -19,18 +18,13 @@ public class Tools {
 	 * @param offset Where to start converting to a double
 	 * @return The double-precision floating point value
 	 */
-=======
-public class Tools {
-	private static ArrayList<String> log = new ArrayList<String>();
 
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static double bytesToDouble(byte[] data, int offset) {
 		int i = (data[offset] & 0xFF) | ((data[offset + 1] & 0xFF) << 8) | ((data[offset + 2] & 0xFF) << 16)
 				| ((data[offset + 3] & 0xFF) << 24);
 		return Float.intBitsToFloat(i);
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Linearly interpolates between two values.
 	 * 
@@ -39,25 +33,19 @@ public class Tools {
 	 * @param amount The amount to interpolate
 	 * @return The result of the linear interpolation, i.e. lerp(1, 2, 0.5) = 1.5
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static double lerp(double point1, double point2, double amount) {
 		return point1 + amount * (point2 - point1);
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Writes a line to the game's log, and prints it out on the Java command line via standard output.
 	 * @param line The line to log
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static void log(String line) {
 		log.add(line);
 		System.out.println(line);
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * Writes a line to the game's log, and prints it out on the Java command line via standard error output.
 	 * @param line The line to log
@@ -71,30 +59,22 @@ public class Tools {
 	 * @param x The number to take the sine of
 	 * @return The sine of the degree value
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static double dsin(double x) {
 		return Math.sin(Math.toRadians(x));
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * @param x The number to take the cosine of
 	 * @return The cosine of the degree value
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static double dcos(double x) {
 		return Math.cos(Math.toRadians(x));
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * @param x The number to take the tangent of
 	 * @return The tangent of the degree value
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public static double dtan(double x) {
 		return Math.tan(Math.toRadians(x));
 	}

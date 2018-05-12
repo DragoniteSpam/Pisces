@@ -1,6 +1,5 @@
 package gamedata;
 
-<<<<<<< HEAD
 import com.badlogic.gdx.graphics.Texture;
 
 public class PiscesItem extends GameData {
@@ -39,8 +38,4 @@ public class PiscesItem extends GameData {
 	public void setModel(PiscesModel model) {
 		this.model=model;
 	}
-=======
-public class PiscesItem {
-
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 }

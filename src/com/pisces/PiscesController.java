@@ -11,15 +11,13 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
-<<<<<<< HEAD
 /**
  * Class which controls input handling such as button presses and joystick axes.
  * 
  * @author mpeng
  * @version 1.0.0
  */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
+
 public class PiscesController implements InputProcessor, ControllerListener {
 	private boolean[] keys;
 	private int keyA, keyB, keyX, keyY, keyL, keyR, keyL2, keyR2, keyLS, keyRS, keyStart, keySelect, keyUp, keyDown,
@@ -62,11 +60,8 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public static final int CONTROLLER_RIGHT_DOWN = 284;
 	public static final int CONTROLLER_RIGHT_LEFT = 285;
 	public static final int CONTROLLER_RIGHT_RIGHT = 286;
-<<<<<<< HEAD
 	
 	public static final int DEBUG_DRAW_WORLD=Keys.F12;
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 
 	private HashMap<Integer, Integer> buttonMap;
 	private HashMap<Integer, Integer> mouseMap;
@@ -77,13 +72,10 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	private int mouseX;
 	private int mouseY;
 
-<<<<<<< HEAD
 	/**
 	 * Constructor which initializes the key code array and maps various inputs onto values in the key code array.
 	 * Also it centers the mouse cursor.
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public PiscesController() {
 		keys = new boolean[300];
 		for (int i = 0; i < keys.length; i++) {
@@ -182,43 +174,34 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Code that runs when a key is pressed
 	 * 
 	 * @param keycode The code for the key which has been pressed
 	 * @return false?
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public boolean keyDown(int keycode) {
 		keys[keycode] = true;
 		return false;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Code that runs when a key is released
 	 * 
 	 * @param keycode The code for the key which has been released
 	 * @return false?
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public boolean keyUp(int keycode) {
 		keys[keycode] = false;
 		return false;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * I honestly don't know what this is for.
 	 * 
 	 * @param character The character which was typed, I suppose
 	 * @return I give up
 	 */
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public boolean keyTyped(char character) {
 		// TODO Auto-generated method stub
 		return false;
@@ -755,7 +738,6 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public double getLeftStickVertical() {
 		return leftStickVertical;
 	}
-<<<<<<< HEAD
 	
 	/*
 	 * Generic keys
@@ -768,6 +750,4 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public boolean get(int key) {
 		return this.keys[key];
 	}
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 }

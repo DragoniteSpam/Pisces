@@ -27,7 +27,6 @@ public class PiscesModel extends GameData {
 		super(name);
 		all.add(this);
 		
-<<<<<<< HEAD
 		init();
 	}
 	
@@ -39,8 +38,6 @@ public class PiscesModel extends GameData {
 	}
 	
 	private void init() {
-=======
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 		this.modelVisible=null;
 		this.modelCollision=null;
 		this.modelVisibleCollision=null;
@@ -49,13 +46,6 @@ public class PiscesModel extends GameData {
 		this.radius=0f;
 	}
 	
-<<<<<<< HEAD
-=======
-	public PiscesModel(String name, long id) {
-		super(name, id);
-	}
-	
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	public void delete() {
 		// Any cleanup that needs to happen here
 		for (int i=0; i<all.size(); i++) {

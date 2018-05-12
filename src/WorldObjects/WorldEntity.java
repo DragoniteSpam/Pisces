@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.RayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.pisces.Pisces;
 import com.pisces.PiscesController;
 
 import gamedata.PiscesModel;
@@ -34,7 +31,6 @@ public class WorldEntity extends WorldObject {
 	}
 
 	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
-<<<<<<< HEAD
 		this.position.set(position.x + xspeed, position.y + yspeed, position.z + zspeed);
 		
 		int flags=this.collisionObject.getCollisionFlags();
@@ -71,7 +67,6 @@ public class WorldEntity extends WorldObject {
 		/*this.worldTransform.set(position, orientation);
 		this.collisionObject.setWorldTransform(worldTransform);*/
 		//this.collisionObject.setCollisionFlags(flags);
-=======
 		this.previous.set(this.position);
 
 		this.position.set(position.x + xspeed, position.y + yspeed, position.z + zspeed);
@@ -81,7 +76,6 @@ public class WorldEntity extends WorldObject {
 		if (!(this.orientation.x==this.previousOrientation.x&&this.orientation.y==this.previousOrientation.y&&this.orientation.z==this.previousOrientation.z&&this.orientation.w==this.previousOrientation.w)) {
 			this.collisionObject.getWorldTransform().set(position, orientation, scale);
 		}
->>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	}
 
 	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {
