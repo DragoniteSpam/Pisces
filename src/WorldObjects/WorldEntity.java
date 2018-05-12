@@ -34,6 +34,7 @@ public class WorldEntity extends WorldObject {
 	}
 
 	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
+<<<<<<< HEAD
 		this.position.set(position.x + xspeed, position.y + yspeed, position.z + zspeed);
 		
 		int flags=this.collisionObject.getCollisionFlags();
@@ -70,6 +71,17 @@ public class WorldEntity extends WorldObject {
 		/*this.worldTransform.set(position, orientation);
 		this.collisionObject.setWorldTransform(worldTransform);*/
 		//this.collisionObject.setCollisionFlags(flags);
+=======
+		this.previous.set(this.position);
+
+		this.position.set(position.x + xspeed, position.y + yspeed, position.z + zspeed);
+		if (!(this.position.x==this.previous.x&&this.position.y==this.previous.y&&this.position.z==this.previous.z)) {
+			this.collisionObject.getWorldTransform().setTranslation(this.position);
+		}
+		if (!(this.orientation.x==this.previousOrientation.x&&this.orientation.y==this.previousOrientation.y&&this.orientation.z==this.previousOrientation.z&&this.orientation.w==this.previousOrientation.w)) {
+			this.collisionObject.getWorldTransform().set(position, orientation, scale);
+		}
+>>>>>>> a927a9627e0d19b60834746900d36667d53f337e
 	}
 
 	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {
