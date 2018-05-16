@@ -1,4 +1,4 @@
-package gamedata;
+package gamedata.resources;
 
 import java.util.HashMap;
 

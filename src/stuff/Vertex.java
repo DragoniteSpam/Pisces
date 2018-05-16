@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class Vertex {
-	private Vector3 position;
-	private Vector3 normal;
-	private Vector2 tex;
-	private Color color;
-	private float alpha;
+	public Vector3 position;
+	public Vector3 normal;
+	public Vector2 tex;
+	public Color color;
+	public float alpha;
 	
 	public Vertex(Vector3 position, Vector3 normal, Vector2 tex, Color color, float alpha) {
 		this.position=position;
@@ -27,55 +27,15 @@ public class Vertex {
 		this.alpha=alpha;
 	}
 	
-	public float getX() {
-		return position.x;
+	public Vertex(float x, float y, float z, float nx, float ny, float nz) {
+		this.position=new Vector3(x, y, z);
+		this.normal=new Vector3(nx, ny, nz);
+		this.tex=new Vector2(0, 0);
+		this.color=Color.WHITE;
+		this.alpha=1f;
 	}
 	
-	public float getY() {
-		return position.y;
-	}
-	
-	public float getZ() {
-		return position.z;
-	}
-	
-	public Vector3 getPosition() {
-		return position;
-	}
-	
-	public float getNX() {
-		return normal.x;
-	}
-	
-	public float getNY() {
-		return normal.y;
-	}
-	
-	public float getNZ() {
-		return normal.z;
-	}
-	
-	public Vector3 getNormals() {
-		return normal;
-	}
-	
-	public float getXTex() {
-		return tex.x;
-	}
-	
-	public float getYTex() {
-		return tex.y;
-	}
-	
-	public Vector2 getTex() {
-		return tex;
-	}
-	
-	public Color getColor() {
-		return color;
-	}
-	
-	public float getAlpha() {
-		return alpha;
+	public String toString() {
+		return this.position.toString();
 	}
 }

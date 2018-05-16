@@ -8,6 +8,10 @@ package com.pisces;
  */
 
 public class Settings {
+	public static final int LEVEL_CURVE=120;
+	public static final int LEVEL_BASE=100;
+	public static final int BASE_AP_PER_ABILITY=100;
+	
 	private float controlDeadZone;
 	private boolean controlInvertX;
 	private boolean controlInvertY;

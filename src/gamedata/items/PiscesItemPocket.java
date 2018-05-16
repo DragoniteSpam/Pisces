@@ -1,7 +1,10 @@
-package gamedata;
+package gamedata.items;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+
+import exceptions.ResourceNotFoundException;
+import stuff.ItemPockets;
 
 public class PiscesItemPocket {
 	private static PiscesItemPocket[] all=new PiscesItemPocket[ItemPockets.KEY.ordinal()+1];

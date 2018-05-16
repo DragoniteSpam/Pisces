@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.PiscesController;
 
 import WorldObjects.WorldEntity;
-import gamedata.PiscesModel;
+import gamedata.resources.PiscesModel;
 
 public class WorldEntityLight extends WorldEntity {
 	protected PointLight light;
@@ -33,9 +33,9 @@ public class WorldEntityLight extends WorldEntity {
 		this.lightIntensity=128f;
 	}
 
-	public boolean render(Camera camera, ModelBatch batch, Environment environment) {
+	public boolean render(Camera camera, ModelBatch batch, Environment environment, boolean debug) {
 		animationController.update(Gdx.graphics.getDeltaTime());
-		return super.render(camera, batch, environment);
+		return super.render(camera, batch, environment, debug);
 	}
 
 	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {

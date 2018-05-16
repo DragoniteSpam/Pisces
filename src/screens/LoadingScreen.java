@@ -1,6 +1,7 @@
 package screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,7 +20,7 @@ public class LoadingScreen implements PiscesDrawable {
 		loadingButton=new GlyphLayout(Pisces.me().getFont20(), "Loading . . .");
 	}
 	
-	public void render(SpriteBatch spriteBatch, long frames) {
+	public void render(SpriteBatch spriteBatch, long frames, OrthographicCamera camera) {
 		float fishX = textureRegionPisces.getRegionWidth() / 2;
 		float fishY = textureRegionPisces.getRegionHeight() / 2;
 		spriteBatch.draw(textureRegionPisces, Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f,

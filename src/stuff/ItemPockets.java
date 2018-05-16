@@ -1,4 +1,4 @@
-package gamedata;
+package stuff;
 
 public enum ItemPockets {
 	WEAPON,

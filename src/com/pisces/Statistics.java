@@ -6,14 +6,14 @@ package com.pisces;
  * @author mpeng
  * @version 1.0.0
  */
-public class Stats {
+public class Statistics {
 	private long startupTime;
 	
 	/**
 	 * Constructor (doesn't do anything)
 	 */
 	
-	public Stats() {
+	public Statistics() {
 		super();
 	}
 	

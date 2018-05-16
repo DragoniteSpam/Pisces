@@ -18,9 +18,11 @@ public class GameData {
 	
 	public GameData(String name, int id) {
 		this(name);
-		ids.remove(this.id);
-		this.id=id;
-		ids.put(this.id,  this);
+		if (id>0) {
+			ids.remove(this.id);
+			this.id=id;
+			ids.put(this.id,  this);
+		}
 	}
 	
 	public final String getName() {

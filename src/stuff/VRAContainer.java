@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import exceptions.BufferOutOfBoundsException;
-import gamedata.PiscesModel;
+import gamedata.resources.PiscesModel;
 
 public class VRAContainer {
 	private String path;
@@ -36,7 +36,7 @@ public class VRAContainer {
 					pmodel=new PiscesModel(name.substring(2));
 					map.put(pmodel.getName(),  pmodel);
 				}
-				pmodel.setModelCollision(buffer.getModelCollision());
+				//pmodel.setModelCollision(buffer.getModelCollision());
 			} else {
 				PiscesModel pmodel;
 				if (map.containsKey(name)) {

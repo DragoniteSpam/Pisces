@@ -62,6 +62,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public static final int CONTROLLER_RIGHT_RIGHT = 286;
 	
 	public static final int DEBUG_DRAW_WORLD=Keys.F12;
+	public static final int DEBUG_BLOCK_WORLD=Keys.F11;
 
 	private HashMap<Integer, Integer> buttonMap;
 	private HashMap<Integer, Integer> mouseMap;
@@ -382,7 +383,15 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	 * Accessing the Input
 	 */
 	
-	public boolean generic(int keyCode) {
+	public int getMouseX() {
+		return this.mouseX;
+	}
+	
+	public int getMouseY() {
+		return this.mouseY;
+	}
+	
+	public boolean get(int keyCode) {
 		if (keyCode<0||keyCode>=keys.length) {
 			throw new ArrayIndexOutOfBoundsException("Illegal key code: "+keyCode);
 		}
@@ -737,17 +746,5 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	
 	public double getLeftStickVertical() {
 		return leftStickVertical;
-	}
-	
-	/*
-	 * Generic keys
-	 */
-	
-	/**
-	 * @param key The key to check
-	 * @return Whether the key is pressed or not
-	 */
-	public boolean get(int key) {
-		return this.keys[key];
 	}
 }

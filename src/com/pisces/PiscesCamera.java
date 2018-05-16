@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-import WorldObjects.WorldObject;
 import stuff.CameraProperties;
+import WorldObjects.WorldObject;
 
 public class PiscesCamera extends PerspectiveCamera {
 	public static final double DEFAULT_DISTANCE = 64;
@@ -153,5 +153,13 @@ public class PiscesCamera extends PerspectiveCamera {
 
 	public WorldObject getTarget() {
 		return this.target;
+	}
+	
+	public Vector3 getFrom() {
+		return this.from;
+	}
+	
+	public Vector3 getTo() {
+		return this.to;
 	}
 }
