@@ -101,7 +101,9 @@ public class PiscesClass extends GameData {
 		PiscesClass active=new PiscesClass("Warrior", -1, stat2, stat1, stat2, stat7, stat5, stat4, cb1, cb2, stat6, 0.75, 0.75);
 		active.setSkillTree(0,  PiscesSkillTree.getByName("Intuition"));
 		active=new PiscesClass("Wizard", -1, stat3, stat7, stat6, stat1, stat2, stat5, cb2, cb1, stat4, 1, 1);
+		active.setSkillTree(0,  PiscesSkillTree.getByName("Intuition"));
 		active=new PiscesClass("Healer", -1, stat2, stat6, stat5, stat4, stat1, stat3, cb2, cb1, stat7, 0.9, 1);
+		active.setSkillTree(0,  PiscesSkillTree.getByName("Intuition"));
 	}
 
 	public static PiscesClass getByName(String name) throws ResourceNotFoundException {

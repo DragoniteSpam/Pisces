@@ -198,8 +198,8 @@ public class WorldObject {
 		}
 		ids.remove(this.id);
 		
-		//this.callback.dispose();
-		//this.collisionObject.dispose();
+		this.callback.dispose();
+		this.collisionObject.dispose();
 	}
 	
 	public void kill() {

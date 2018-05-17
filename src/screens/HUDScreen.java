@@ -20,8 +20,8 @@ public class HUDScreen extends Actor {
 	private Texture hudTexture;
 	private TextureRegion character;
 	
-	public HUDScreen() {
-		hudTexture=new Texture("../pisces-core/assets/graphics/overlay.png");
+	public HUDScreen(Texture overlayTexture) {
+		hudTexture=overlayTexture;
 		character=new TextureRegion(hudTexture, 0, 0, 256, 192);
 	}
 
@@ -44,8 +44,8 @@ public class HUDScreen extends Actor {
 			font20.setColor(Color.BLACK);
 			font32.setColor(Color.BLACK);
 			font32.draw(batch, teammate.getName(), characterX+32, characterY+characterOverlayHeight-32);
-			font20.draw(batch, "Level "+teammate.getLevel(), characterX+32, characterY+characterOverlayHeight-48);
-			font20.draw(batch, "HP: "+teammate.getHP()+"/"+teammate.getBaseClass().getStat(Stats.HP), characterX+32, characterY+characterOverlayHeight-64);
+			font20.draw(batch, "Level "+teammate.getLevel(), characterX+32, characterY+characterOverlayHeight-64);
+			font20.draw(batch, "HP: "+teammate.getHP()+"/"+teammate.getStat(Stats.HP), characterX+32, characterY+characterOverlayHeight-80);
 		}
 	}
 

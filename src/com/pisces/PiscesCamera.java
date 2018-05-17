@@ -16,6 +16,8 @@ public class PiscesCamera extends PerspectiveCamera {
 	private Vector3 to, from, up;
 	private double distance;
 	private double glideRate;
+	private float lookDirection;
+	private float lookPitch;
 	private CameraProperties state;
 	private CameraProperties mode;
 	
@@ -31,22 +33,32 @@ public class PiscesCamera extends PerspectiveCamera {
 		this.fieldOfView = fieldOfView;
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
-		near = 1f;
-		far = 32000f;
+		this.near = 1f;
+		this.far = 32000f;
 
-		target = null;
-		hook = null;
-		to = new Vector3(0f, 0f, 0f);
-		from = new Vector3(0f, 0f, 0f);
-		up = new Vector3(0f, 1f, 0f);
-		distance = DEFAULT_DISTANCE;
-		glideRate = DEFAULT_GLIDE_RATE;
-		state = CameraProperties.CAMERA_FREE;
-		mode = CameraProperties.CAMERA_SNAP;
+		this.target = null;
+		this.hook = null;
+		this.to = new Vector3(0f, 0f, 0f);
+		this.from = new Vector3(0f, 0f, 0f);
+		this.up = new Vector3(0f, 1f, 0f);
+		this.distance = DEFAULT_DISTANCE;
+		this.lookDirection=0f;
+		this.lookPitch=0f;
+		this.glideRate = DEFAULT_GLIDE_RATE;
+		this.state = CameraProperties.CAMERA_FREE;
+		this.mode = CameraProperties.CAMERA_SNAP;
 	}
 
 	public void setFollowing(WorldObject object) {
-		target = object;
+		setFollowing(object, true);
+	}
+	
+	public void setFollowing(WorldObject object, boolean assumeNewLookAngle) {
+		this.target=object;
+		if (assumeNewLookAngle) {
+			this.lookDirection=target.getDirection();
+			this.lookPitch=target.getPitch();
+		}
 	}
 
 	public void update() {
@@ -58,10 +70,9 @@ public class PiscesCamera extends PerspectiveCamera {
 			}
 			targetPosition = target.getPosition();
 			from.set(targetPosition.x, targetPosition.y + target.getEyeHeight(), targetPosition.z);
-			to.set((float) (from.x + Tools.dcos(target.getDirection())),
-					(float) (from.y - Tools.dsin(target.getPitch())),
-					(float) (from.z - Tools.dsin(target.getDirection())));
-			//rotate(Vector3.Y, target.getDirection());
+			to.set((float) (from.x + Tools.dcos(lookDirection)),
+					(float) (from.y - Tools.dsin(lookPitch)),
+					(float) (from.z - Tools.dsin(lookDirection)));
 			break;
 		case CAMERA_THIRD_PERSON:
 			if (target == null) {
@@ -69,15 +80,16 @@ public class PiscesCamera extends PerspectiveCamera {
 			}
 			targetPosition = target.getPosition();
 			to.set(targetPosition.x, targetPosition.y + target.getEyeHeight(), targetPosition.z);
-			// @todo There should be a raycast here to make sure the camera doesn't clip
+			// TODO There should be a raycast here to make sure the camera doesn't clip
 			// through a wall
-			from.set((float) (to.x - distance * Tools.dcos(target.getDirection())),
-					(float) (to.y + distance * Tools.dsin(target.getPitch())),
-					(float) (to.z + distance * Tools.dsin(target.getDirection())));
-			//rotate(Vector3.Y, target.getDirection());
+			from.set((float) (to.x - distance * Tools.dcos(lookDirection)),
+					(float) (to.y - distance * Tools.dsin(lookPitch)),
+					(float) (to.z + distance * Tools.dsin(lookDirection)));
 			break;
 		case CAMERA_FREE:
 			// leave alone
+			break;
+		default:
 			break;
 		}
 
@@ -91,6 +103,8 @@ public class PiscesCamera extends PerspectiveCamera {
 				to.set((float) Tools.lerp(to.x, targetPosition.x, glideRate),
 						(float) Tools.lerp(to.y, targetPosition.y, glideRate),
 						(float) Tools.lerp(to.z, targetPosition.z, glideRate));
+				break;
+			default:
 				break;
 			}
 		}
@@ -161,5 +175,21 @@ public class PiscesCamera extends PerspectiveCamera {
 	
 	public Vector3 getTo() {
 		return this.to;
+	}
+	
+	public float getDirection() {
+		return this.lookDirection;
+	}
+	
+	public float getPitch() {
+		return this.lookPitch;
+	}
+	
+	public void setDirection(float direction) {
+		this.lookDirection=direction;
+	}
+	
+	public void setPitch(float pitch) {
+		this.lookPitch=pitch;
 	}
 }

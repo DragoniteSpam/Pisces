@@ -5,12 +5,14 @@ import java.io.File;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -63,10 +65,11 @@ import WorldObjects.WorldObject;
 import WorldObjects.animation.WorldEntityAutoAnimate;
 
 /**
- * The central hub that manages the game loop and pretty much connects everything to everything else.
+ * The central hub that manages the game loop and pretty much connects
+ * everything to everything else.
  * 
  * @author mpeng
- * @version	1.0.0
+ * @version 1.0.0
  */
 public final class Pisces extends ApplicationAdapter implements ApplicationListener {
 	/**
@@ -76,23 +79,22 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	/**
 	 * A generic Vector3 for generic purposes.
 	 */
-	public static final Vector3 position=new Vector3();
-	
+	public static final Vector3 position = new Vector3();
+
 	private GameStates gameState;
 	private PlayStates playState;
 	private DebugStates debugState;
-	private boolean isPaused;
 	public boolean drawHUD;
 
 	private static Pisces me = null;
-	
+
 	private AssetManager assets;
 
 	private long frames;
 	private long startupBeginTime;
 	private Settings settings;
 	private Statistics stats;
-	
+
 	private PiscesController controller;
 	private PiscesCamera camera;
 	private OrthographicCamera orthographic;
@@ -101,7 +103,8 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	private Stage stagePause;
 	private Stage stageDebug;
 	private Stage stageHUD;
-	
+
+	private Texture overlayTexture;
 	private LoadingScreen loadingScreen;
 	private PauseScreen pauseScreen;
 	private DebugScreen debugScreen;
@@ -112,19 +115,18 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	private BitmapFont font32o, font64o;
 
 	private ModelBatch modelBatch;
-	
-	//private PiscesCollisions world;
-	
+
+	// private PiscesCollisions world;
+
 	private btCollisionConfiguration collisionConfig;
 	private btDispatcher dispatcher;
 	private btBroadphaseInterface broadphase;
 	private btCollisionWorld world;
 	private PiscesContactListener contactListener;
-	
-	private WorldEntityPlayer player;
-	
-	private DebugDrawer debugDrawer;
 
+	private WorldEntityPlayer player;
+
+	private DebugDrawer debugDrawer;
 
 	/**
 	 * Constructs a new Pisces. Sort of a singleton?
@@ -151,49 +153,48 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		/*
 		 * Really important general stuff
 		 */
-		startupBeginTime=System.currentTimeMillis();
+		startupBeginTime = System.currentTimeMillis();
 		frames = 0;
 		gameState = GameStates.LOADING;
-		//playState = PlayStates.TITLE;
-		playState=PlayStates.PLAYING;
-		debugState=DebugStates.OFF;
-		isPaused=false;
-		drawHUD=true;
-		
+		// playState = PlayStates.TITLE;
+		playState = PlayStates.PLAYING;
+		debugState = DebugStates.OFF;
+		drawHUD = true;
+
 		spriteBatch = new SpriteBatch();
 		font12 = new BitmapFont(Gdx.files.internal("../pisces-core/assets/graphics/delfino12.fnt"));
 		font20 = new BitmapFont(Gdx.files.internal("../pisces-core/assets/graphics/delfino20.fnt"));
 		font32 = new BitmapFont(Gdx.files.internal("../pisces-core/assets/graphics/delfino32.fnt"));
 		font32o = new BitmapFont(Gdx.files.internal("../pisces-core/assets/graphics/delfino32o.fnt"));
 		font64o = new BitmapFont(Gdx.files.internal("../pisces-core/assets/graphics/delfino64o.fnt"));
-		
+
 		/*
 		 * Various libraries, etc
 		 */
 
 		Bullet.init();
-		
-		//collision=new PiscesCollisions();
-		
+
+		// collision=new PiscesCollisions();
+
 		/*
 		 * Collision
 		 */
-		
-		collisionConfig=new btDefaultCollisionConfiguration();
-		dispatcher=new btCollisionDispatcher(collisionConfig);
-		broadphase=new btDbvtBroadphase();
-		world=new btCollisionWorld(dispatcher, broadphase, collisionConfig);
-		contactListener=new PiscesContactListener();
+
+		collisionConfig = new btDefaultCollisionConfiguration();
+		dispatcher = new btCollisionDispatcher(collisionConfig);
+		broadphase = new btDbvtBroadphase();
+		world = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+		contactListener = new PiscesContactListener();
 		contactListener.enable();
-		
-		//this.world=new PiscesCollisions();
-		
+
+		// this.world=new PiscesCollisions();
+
 		/*
 		 * Assets
 		 */
-		
+
 		loadAssets();
-		
+
 		/*
 		 * Lighting
 		 */
@@ -201,62 +202,64 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-		
+
 		/*
 		 * Screens
 		 */
 
 		loadingScreen = new LoadingScreen();
-		
-		stagePause=new Stage();
-		stageDebug=new Stage();
-		stageHUD=new Stage();
-		
-		pauseScreen=new PauseScreen();
-		debugScreen=new DebugScreen();
-		hudScreen=new HUDScreen();
-		
+
+		stagePause = new Stage();
+		stageDebug = new Stage();
+		stageHUD = new Stage();
+
+		overlayTexture=new Texture("../pisces-core/assets/graphics/overlay.png");
+		pauseScreen = new PauseScreen(overlayTexture);
+		debugScreen = new DebugScreen(overlayTexture);
+		hudScreen = new HUDScreen(overlayTexture);
+
 		stagePause.addActor(pauseScreen);
 		stageDebug.addActor(debugScreen);
 		stageHUD.addActor(hudScreen);
-		
+
 		/*
 		 * The camera and things related to the camera
 		 */
 
-		camera=new PiscesCamera(60f, Gdx.graphics.getWidth()*1f, Gdx.graphics.getHeight()*1f);
-		orthographic=new OrthographicCamera();
-		
-		modelBatch=new ModelBatch();
-		
+		camera = new PiscesCamera(60f, Gdx.graphics.getWidth() * 1f, Gdx.graphics.getHeight() * 1f);
+		orthographic = new OrthographicCamera();
+
+		modelBatch = new ModelBatch();
+
 		/*
 		 * Controls and Settings
 		 */
-		
-		controller=new PiscesController();
+
+		controller = new PiscesController();
 		Gdx.input.setInputProcessor(controller);
 		Controllers.addListener(controller);
-		
-		settings=new Settings();
-		stats=new Statistics();
-		
+
+		settings = new Settings();
+		stats = new Statistics();
+
 		/*
 		 * Other important things
 		 */
-		
-		player=null;
-		
+
+		player = null;
+
 		/*
 		 * Test stuff
 		 */
-		
-		debugDrawer=new DebugDrawer();
+
+		debugDrawer = new DebugDrawer();
 		debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
 		world.setDebugDrawer(debugDrawer);
 	}
 
 	/**
-	 * Renders everything in the screen, as well as performs the game loop ("the Step event")
+	 * Renders everything in the screen, as well as performs the game loop ("the
+	 * Step event")
 	 */
 
 	@Override
@@ -270,32 +273,54 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			if (assets.update()) {
 				processAssets();
 				gameState = GameStates.PLAYING;
-				stats.setStartupTime(System.currentTimeMillis()-startupBeginTime);
-				Tools.log("Startup took "+stats.getStartupTime()/1000.0+" seconds.");
+				controller.lockCursor();
+				stats.setStartupTime(System.currentTimeMillis() - startupBeginTime);
+				Tools.log("Startup took " + stats.getStartupTime() / 1000.0 + " seconds.");
 			} else {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				spriteBatch.begin();
 				loadingScreen.render(spriteBatch, frames, orthographic);
 				spriteBatch.end();
 			}
-		/*
-		 * Game world screen
-		 */
+			/*
+			 * Game world screen
+			 */
 		} else {
 			camera.update();
-			
+
 			/*
 			 * the Step event
 			 */
-			WorldObject.processAll(controller,  Gdx.graphics.getDeltaTime(), world);
-			//world.performDiscreteCollisionDetection();
-			WorldObject.processAllPost(controller, Gdx.graphics.getDeltaTime(), world);
+
+			if (Gdx.input.isKeyJustPressed(Keys.GRAVE)) {
+				if (debugState != DebugStates.LOG) {
+					debugState = DebugStates.LOG;
+					controller.unlockCursor();
+				} else {
+					debugState = DebugStates.OFF;
+					controller.lockCursor();
+				}
+			}
 			
+			if (controller.startRelease()) {
+				if (playState==PlayStates.PLAYING) {
+					pauseGame();
+				} else {
+					unpauseGame();
+				}
+			}
+
+			if (playState == PlayStates.PLAYING && debugState == DebugStates.OFF) {
+				WorldObject.processAll(controller, Gdx.graphics.getDeltaTime(), world);
+				// world.performDiscreteCollisionDetection();
+				WorldObject.processAllPost(controller, Gdx.graphics.getDeltaTime(), world);
+			}
 			/*
 			 * the Draw event
 			 */
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-			
+			// Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
 			switch (playState) {
 			case TITLE:
 				break;
@@ -307,39 +332,39 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			/*
 			 * The models
 			 */
-			
-			int visible=0;
+
+			int visible = 0;
 			if (DebugStates.drawWorld(debugState)) {
 				if (controller.get(PiscesController.DEBUG_DRAW_WORLD)) {
 					debugDrawer.begin(camera);
 					world.debugDrawWorld();
 					debugDrawer.end();
-				} else if (controller.get(PiscesController.DEBUG_BLOCK_WORLD)){
+				} else if (controller.get(PiscesController.DEBUG_BLOCK_WORLD)) {
 					modelBatch.begin(camera);
-					visible=WorldObject.renderAllDebug(modelBatch, environment);
+					visible = WorldObject.renderAllDebug(modelBatch, environment);
 					modelBatch.end();
 				} else {
 					modelBatch.begin(camera);
-					visible=WorldObject.renderAll(modelBatch, environment);
+					visible = WorldObject.renderAll(modelBatch, environment);
 					modelBatch.end();
 				}
 			}
-			
+
 			/*
 			 * The HUD layer
 			 */
-			
+
 			spriteBatch.setProjectionMatrix(orthographic.combined);
 			spriteBatch.begin();
 			if (DebugStates.isDebugState(debugState)) {
 				stageDebug.draw();
-			} else if (isPaused) {
+			} else if (playState==PlayStates.PAUSED) {
 				stagePause.draw();
 			} else if (drawHUD) {
 				stageHUD.draw();
 			}
 			if (DEBUG) {
-				
+
 			}
 			spriteBatch.end();
 		}
@@ -357,7 +382,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		spriteBatch.dispose();
 
 		WorldObject.disposeAll();
-		
+
 		// These must be disposed of in the reverse order that they were created.
 		world.dispose();
 		broadphase.dispose();
@@ -366,7 +391,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 		contactListener.disable();
 		contactListener.dispose();
-		
+
 		stagePause.dispose();
 		stageDebug.dispose();
 		stageHUD.dispose();
@@ -394,8 +419,9 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	}
 
 	private void loadAssets() {
-		assets=new AssetManager();
-		// @warning This may not work when the project is built, depending on the way the jar links everything together!
+		assets = new AssetManager();
+		// @warning This may not work when the project is built, depending on the way
+		// the jar links everything together!
 		loadAssetModels(Gdx.files.internal("../pisces-core/assets/models/"));
 		loadAssetSounds(Gdx.files.internal("../pisces-core/assets/sounds/"));
 		try {
@@ -412,37 +438,37 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			System.exit(0);
 		}
 	}
-	
+
 	private void loadAssetModels(FileHandle root) {
-		FileHandle[] handles=root.list();
+		FileHandle[] handles = root.list();
 		for (FileHandle f : handles) {
-			if (f.isDirectory()){
+			if (f.isDirectory()) {
 				loadAssetModels(f);
 			} else {
 				assets.load(f.path(), Model.class);
 			}
 		}
 	}
-	
+
 	private void loadAssetSounds(FileHandle root) {
-		FileHandle[] handles=root.list();
+		FileHandle[] handles = root.list();
 		for (FileHandle f : handles) {
-			if (f.isDirectory()){
+			if (f.isDirectory()) {
 				loadAssetSounds(f);
 			} else {
 				PiscesSound.addSound(Gdx.audio.newSound(f), f.name());
 			}
 		}
 	}
-	
+
 	private void processAssets() {
-		Array<String> allModels=assets.getAssetNames();
+		Array<String> allModels = assets.getAssetNames();
 		for (String name : allModels) {
-			File f=new File(name);
+			File f = new File(name);
 			if (!f.getName().endsWith("_c.g3db")) {
-				PiscesModel pm=new PiscesModel(f.getName());
+				PiscesModel pm = new PiscesModel(f.getName());
 				pm.setModelVisible(assets.get(name, Model.class));
-				String collisionName=name.replace(".g3db", "_c.g3db");
+				String collisionName = name.replace(".g3db", "_c.g3db");
 				pm.setModelVisibleCollision(assets.get(collisionName, Model.class));
 				pm.autoCollisionShape();
 				if (name.endsWith(".nc.g3db")) {
@@ -450,15 +476,19 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 				}
 			}
 		}
-		
-		new WorldEntity(new Vector3(96f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("barrel.g3db"), "Barrel");
-		new WorldEntityAutoAnimate(new Vector3(256f, 0f, 128f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("windmill.g3db"), "Windmill");
-		WorldEntityLight light=new WorldEntityLight(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
+
+		new WorldEntity(new Vector3(96f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
+				PiscesModel.get("barrel.g3db"), "Barrel");
+		new WorldEntityAutoAnimate(new Vector3(256f, 0f, 128f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
+				PiscesModel.get("windmill.g3db"), "Windmill");
+		WorldEntityLight light = new WorldEntityLight(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0),
+				new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
 		light.setLightColor(Color.WHITE);
 		light.setLightIntensity(1024f);
 		light.setLightOffset(0f, 60f, 0f);
 		light.setLight(environment);
-		player=new WorldEntityPlayer(new Vector3(0f, 0f, 0f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f), PiscesModel.get("npc.g3db"), "Player");
+		player = new WorldEntityPlayer(new Vector3(0f, 0f, 0f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
+				PiscesModel.get("npc.g3db"), "Player");
 		try {
 			player.addTeamMemeber(PiscesCharacter.getByName("Dragonite"));
 		} catch (TeamException e) {
@@ -470,13 +500,13 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		}
 		camera.setFollowing(player);
 		camera.setCameraThirdPerson();
-		//camera.setCameraFirstPerson();
+		// camera.setCameraFirstPerson();
 	}
-	
+
 	/**
 	 * @return The game player
 	 */
-	
+
 	public WorldEntityPlayer getPlayer() {
 		return this.player;
 	}
@@ -494,61 +524,72 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	public BitmapFont getFont20() {
 		return font20;
 	}
-	
+
 	/**
 	 * @return The size-thirty two game font
 	 */
 	public BitmapFont getFont32() {
 		return font32;
 	}
-	
+
 	/**
 	 * @return The size-thirty two/outlined game font
 	 */
 	public BitmapFont getFont32o() {
 		return font32o;
 	}
-	
+
 	/**
 	 * @return The size-sixty four/outlined game font
 	 */
 	public BitmapFont getFont64o() {
 		return font64o;
 	}
-	
+
 	/**
 	 * @return The input-handling object
 	 */
 	public PiscesController getController() {
 		return controller;
 	}
-	
+
 	/**
 	 * @return The game settings device
 	 */
 	public Settings getSettings() {
 		return settings;
 	}
-	
+
 	/**
 	 * @return The collision world
 	 */
-	
+
 	public btCollisionWorld getCollisionWorld() {
 		return world;
 	}
-	/*public PiscesCollisions getCollisionWorld() {
-		return world;
-	}*/
-	
+	/*
+	 * public PiscesCollisions getCollisionWorld() { return world; }
+	 */
+
 	/**
 	 * @return The 3D camera
 	 */
 	public PiscesCamera getCamera() {
 		return camera;
 	}
-	
+
 	public DebugStates getDebugState() {
 		return this.debugState;
+	}
+	
+	public void pauseGame() {
+		playState=PlayStates.PAUSED;
+		controller.unlockCursor();
+		pauseScreen.reset();
+	}
+	
+	public void unpauseGame() {
+		playState=PlayStates.PLAYING;
+		controller.lockCursor();
 	}
 }

@@ -20,13 +20,15 @@ import com.badlogic.gdx.Input.Keys;
 
 public class PiscesController implements InputProcessor, ControllerListener {
 	private boolean[] keys;
+	private boolean[] previousKeys;
+	
 	private int keyA, keyB, keyX, keyY, keyL, keyR, keyL2, keyR2, keyLS, keyRS, keyStart, keySelect, keyUp, keyDown,
 			keyLeft, keyRight, keyPadUp, keyPadDown, keyPadLeft, keyPadRight, keyRightUp, keyRightDown, keyRightLeft,
 			keyRightRight;
 	private int gpA, gpB, gpX, gpY, gpL, gpR, gpL2, gpR2, gpLS, gpRS, gpStart, gpSelect, gpUp, gpDown, gpLeft, gpRight,
 			gpPadUp, gpPadDown, gpPadLeft, gpPadRight, gpRightUp, gpRightDown, gpRightLeft, gpRightRight;
 	
-	private double leftStickHorizontal, rightStickHorizontal, leftStickVertical, rightStickVertical;
+	private float leftStickHorizontal, rightStickHorizontal, leftStickVertical, rightStickVertical;
 
 	public static final int MOUSE_LEFT_BUTTON = 256;
 	public static final int MOUSE_MIDDLE_BUTTON = 257;
@@ -82,7 +84,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		for (int i = 0; i < keys.length; i++) {
 			keys[i] = false;
 		}
-		lockCursor = true;
+		lockCursor = false;
 		mouseX = Gdx.graphics.getWidth() / 2;
 		mouseY = Gdx.graphics.getHeight() / 2;
 		Gdx.input.setCursorPosition(mouseX, Gdx.graphics.getHeight() - mouseY);
@@ -128,7 +130,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		keyR2=Keys.CONTROL_RIGHT;
 		keyLS=Keys.ALT_LEFT;
 		keyRS=Keys.ALT_RIGHT;
-		keyStart=Keys.ENTER;
+		keyStart=Keys.ESCAPE;
 		keySelect=Keys.BACKSPACE;
 		keyUp=Keys.W;
 		keyDown=Keys.S;
@@ -245,8 +247,9 @@ public class PiscesController implements InputProcessor, ControllerListener {
 			keys[MOUSE_DOWN]=false;
 			keys[MOUSE_UP]=false;
 		}
-		rightStickHorizontal=Tools.clamp((screenX-Gdx.graphics.getWidth()/2)/16, -1, 1);
-		rightStickVertical=Tools.clamp((screenY-Gdx.graphics.getHeight()/2)/16, -1, 1);
+		Settings settings=Pisces.me().getSettings();
+		rightStickHorizontal=Tools.clamp(settings.getControlSensitivity()*(screenX-Gdx.graphics.getWidth()/2)/16, -1, 1);
+		rightStickVertical=Tools.clamp(settings.getControlSensitivity()*(screenY-Gdx.graphics.getHeight()/2)/16, -1, 1);
 		this.mouseX = screenX;
 		this.mouseY = Gdx.graphics.getHeight() - screenY;
 		if (lockCursor) {
@@ -277,6 +280,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	}
 
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
+		Settings settings=Pisces.me().getSettings();
 		if (Math.abs(value) > Pisces.me().getSettings().getControlDeadZone()) {
 			switch (axisCode) {
 			case 0:	// Left stick vertical
@@ -285,7 +289,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				} else {
 					keys[CONTROLLER_UP] = true;
 				}
-				leftStickVertical=value;
+				leftStickVertical=value*settings.getControlSensitivity();
 				break;
 			case 1: // Left stick horizontal
 				if (value > 0) {
@@ -293,7 +297,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				} else {
 					keys[CONTROLLER_LEFT] = true;
 				}
-				leftStickHorizontal=value;
+				leftStickHorizontal=value*settings.getControlSensitivity();
 				break;
 			case 2:	// Right stick vertical
 				if (value > 0) {
@@ -301,7 +305,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				} else {
 					keys[CONTROLLER_RIGHT_UP] = true;
 				}
-				rightStickVertical=value;
+				rightStickVertical=value*settings.getControlSensitivity();
 				break;
 			case 3:	// Right stick horizontal
 				if (value > 0) {
@@ -309,7 +313,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				} else {
 					keys[CONTROLLER_RIGHT_LEFT] = true;
 				}
-				rightStickHorizontal=value;
+				rightStickHorizontal=value*settings.getControlSensitivity();
 				break;
 			case 4:
 				if (value > 0) {
@@ -317,6 +321,7 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				} else {
 					keys[CONTROLLER_R] = true;
 				}
+				// Z axis - this is binary
 				break;
 			}
 		} else {
@@ -702,18 +707,22 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	
 	private double getStickMagnitude(double r, double u) {
 		double deadZone=Pisces.me().getSettings().getControlDeadZone();
-		if (Math.abs(r)<deadZone&&Math.abs(u)<deadZone){
+		double tr=r-(keys[keyLeft]?1:0)+(keys[keyRight]?1:0);
+		double tu=u-(keys[keyUp]?1:0)+(keys[keyDown]?1:0);
+		if (Math.abs(tr)<deadZone&&Math.abs(tu)<deadZone){
 			return 0;
 		}
-		return Math.sqrt(r*r+u*u);
+		return Math.sqrt(tr*tr+tu*tu);
 	}
 	
 	private double getStickDirection(double r, double u) {
 		double deadZone=Pisces.me().getSettings().getControlDeadZone();
-		if (Math.abs(r)<deadZone&&Math.abs(u)<deadZone){
+		double tr=r-(keys[keyLeft]?1:0)+(keys[keyRight]?1:0);
+		double tu=u-(keys[keyUp]?1:0)+(keys[keyDown]?1:0);
+		if (Math.abs(tr)<deadZone&&Math.abs(tu)<deadZone){
 			return -1;
 		}
-		return (Math.toDegrees(Math.atan2(-u, r))+360)%360;
+		return (Math.toDegrees(Math.atan2(-tu, tr))+360)%360;
 	}
 	
 	public double getLeftStickMagnitude() {
@@ -746,5 +755,22 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	
 	public double getLeftStickVertical() {
 		return leftStickVertical;
+	}
+	
+	/*
+	 * Other accessors and mutators
+	 */
+	
+	public boolean getLockCursor() {
+		return this.lockCursor;
+	}
+	
+	public void lockCursor() {
+		this.lockCursor=true;
+		Gdx.input.setCursorPosition(mouseX, Gdx.graphics.getHeight() - mouseY);
+	}
+	
+	public void unlockCursor() {
+		this.lockCursor=false;
 	}
 }

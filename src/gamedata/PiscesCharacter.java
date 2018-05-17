@@ -48,12 +48,16 @@ public class PiscesCharacter extends GameData {
 		
 		setClass(baseClass);
 		
-		this.hp=baseClass.getStat(Stats.HP);
+		this.hp=getStat(Stats.HP);
 	}
 	
 	private void init() {
 		this.activeSkillTree=0;
 		this.hp=0;
+		this.exp=getEXPFromLevel(1);
+		this.level=1;
+		this.sp=0;
+		this.ap=0;
 
 		this.equip=new PiscesInstantiatedEquipment[EquipTypes.WEAPON.ordinal()];
 		
@@ -71,7 +75,9 @@ public class PiscesCharacter extends GameData {
 			m=m+effect.getStatModifier(stat);
 		}
 		for (PiscesInstantiatedEquipment equip : this.equip) {
-			m=m+equip.getStatRating(stat);
+			if (equip!=null) {
+				m=m+equip.getStatRating(stat);
+			}
 		}
 		PiscesInstantiatedSkillTree baseTree=skillTrees[activeSkillTree];
 		if (baseTree.getBaseTree().getBuffStat()==stat) {
@@ -86,11 +92,15 @@ public class PiscesCharacter extends GameData {
 	
 	private int recalculateLevel() {
 		int level=0;
-		while (Settings.LEVEL_BASE*level+Settings.LEVEL_CURVE/2*(Math.pow(level, 2)+level)<=exp) {
+		while (getEXPFromLevel(level)<=exp) {
 			level++;
 		}
 		this.level=level;
 		return level;
+	}
+	
+	private int getEXPFromLevel(int level) {
+		return (int) (Settings.LEVEL_BASE*level+Settings.LEVEL_CURVE/2*(Math.pow(level, 2)+level));
 	}
 
 	private void setClass(PiscesClass baseClass) {

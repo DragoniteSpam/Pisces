@@ -13,6 +13,7 @@ public class Settings {
 	public static final int BASE_AP_PER_ABILITY=100;
 	
 	private float controlDeadZone;
+	private float controlSensitivity;
 	private boolean controlInvertX;
 	private boolean controlInvertY;
 	
@@ -34,9 +35,10 @@ public class Settings {
 	 * Resets the control settings to their default values.
 	 */
 	public void resetControls() {
-		this.controlDeadZone=0.25f;
-		this.controlInvertX=false;
-		this.controlInvertY=true;
+		resetControlDeadZone();
+		resetControlSensitivity();
+		resetControlInvertX();
+		resetControlInvertY();
 	}
 
 	/**
@@ -46,6 +48,18 @@ public class Settings {
 		return controlDeadZone;
 	}
 	
+	public void resetControlDeadZone() {
+		this.controlDeadZone=0.25f;
+	}
+	
+	public float getControlSensitivity() {
+		return this.controlSensitivity;
+	}
+	
+	public void resetControlSensitivity() {
+		this.controlSensitivity=1.25f;
+	}
+	
 	/**	 
 	 * @return Whether the X axis of the controller is inverted
 	 */
@@ -53,10 +67,18 @@ public class Settings {
 		return controlInvertX;
 	}
 	
+	public void resetControlInvertX() {
+		this.controlInvertX=false;
+	}
+	
 	/**
 	 * @return Whether the Y axis of the contoller is inverted
 	 */
 	public boolean getControlInvertY() {
 		return controlInvertY;
+	}
+	
+	public void resetControlInvertY() {
+		this.controlInvertY=true;
 	}
 }

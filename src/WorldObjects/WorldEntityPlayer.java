@@ -46,21 +46,22 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 			if (controller.yRelease()) {
 				yspeed=(float)(JUMP_HEIGHT*deltaTime*baseClass.getJumpHeight());
 			}
+			PiscesCamera camera=Pisces.me().getCamera();
 			float deadZone=Pisces.me().getSettings().getControlDeadZone();
+			float sensitivity=Pisces.me().getSettings().getControlSensitivity();
 			if (controller.getLeftStickMagnitude()>deadZone) {
-				float dir=direction+(float)(controller.getLeftStickDirection())-90f;
-				xspeed=(float)(Tools.dcos(dir)*moveSpeed);
-				zspeed=-(float)(Tools.dsin(dir)*moveSpeed);
+				float dir=(float) (camera.getDirection()+(controller.getLeftStickDirection())-90f);
+				xspeed=Tools.dcos(dir)*moveSpeed;
+				zspeed=-Tools.dsin(dir)*moveSpeed;
 			}
 			if (controller.getRightStickMagnitude()>deadZone) {
 				// TODO raycast to make sure the camera doesn't go through anything
-				direction=(float)(360+direction-controller.getRightStickHorizontal())%360f;
-				pitch=(float)(Tools.clamp(pitch+controller.getRightStickVertical(), -75f, 75f));
+				camera.setDirection((float)(360+camera.getDirection()-controller.getRightStickHorizontal())%360f);
+				camera.setPitch((float)(Tools.clamp(camera.getPitch()+controller.getRightStickVertical(), -75f, 75f)));
 			}
 			if (controller.rs()) {
 				double vertical=controller.getRightStickVertical();
 				double rate=64;
-				PiscesCamera camera=Pisces.me().getCamera();
 				if (vertical<0) {
 					camera.zoomIn(rate*deltaTime);
 				} else {

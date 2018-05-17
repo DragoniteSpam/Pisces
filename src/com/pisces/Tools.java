@@ -79,7 +79,57 @@ public class Tools {
 		return Math.tan(Math.toRadians(x));
 	}
 	
+	/**
+	 * @param x The number to take the sine of
+	 * @return The sine of the degree value
+	 */
+	public static float dsin(float x) {
+		return (float) Math.sin(Math.toRadians(x));
+	}
+	
+	/**
+	 * @param x The number to take the cosine of
+	 * @return The cosine of the degree value
+	 */
+	public static float dcos(float x) {
+		return (float) Math.cos(Math.toRadians(x));
+	}
+	
+	/**
+	 * @param x The number to take the tangent of
+	 * @return The tangent of the degree value
+	 */
+	public static float dtan(float x) {
+		return (float) Math.tan(Math.toRadians(x));
+	}
+	
+	/**
+	 * Clamps a value.
+	 * @param x	The value to clamp
+	 * @param lower	The lower bounds of the clamped value
+	 * @param upper	The upper bounds of the clamped value
+	 * @return	The clamped value
+	 */
 	public static double clamp(double x, double lower, double upper) {
 		return Math.max(lower, Math.min(upper, x));
+	}
+	
+	/**
+	 * Clamps a value.
+	 * @param x	The value to clamp
+	 * @param lower	The lower bounds of the clamped value
+	 * @param upper	The upper bounds of the clamped value
+	 * @return	The clamped value
+	 */
+	public static float clamp(float x, float lower, float upper) {
+		return Math.max(lower, Math.min(upper, x));
+	}
+	
+	/**
+	 * Gets a reference to the log.
+	 * @return a reference to the log
+	 */
+	public static ArrayList<String> getLog(){
+		return log;
 	}
 }
