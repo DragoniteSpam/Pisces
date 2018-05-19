@@ -1,21 +1,15 @@
-package gamedata;
+package gamedata.items;
 
-import gamedata.items.PiscesItemAugment;
-import gamedata.items.PiscesItemEquipment;
 import stuff.Element;
 import stuff.Stats;
 
-public class PiscesInstantiatedEquipment {
-	private PiscesItemEquipment baseItem;
-	private PiscesItemAugment[] slots;
+public class PiscesInstantiatedItemEquipment extends PiscesInstantiatedItem {
+	private PiscesItemWithStats baseItem;
+	protected PiscesItemAugment[] slots;
 	
-	public PiscesInstantiatedEquipment(PiscesItemEquipment baseItem) {
-		this.baseItem=baseItem;
-		this.slots=new PiscesItemAugment[baseItem.getSlots()];
-	}
-	
-	public PiscesItemEquipment getBaseItem() {
-		return this.baseItem;
+	public PiscesInstantiatedItemEquipment() {
+		super();
+		this.slots=new PiscesItemAugment[0];
 	}
 	
 	public double getStatRating(Stats stat) {

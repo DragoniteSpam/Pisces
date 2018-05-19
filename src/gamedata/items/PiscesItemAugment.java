@@ -3,7 +3,7 @@ package gamedata.items;
 import stuff.Element;
 import stuff.Stats;
 
-public class PiscesItemAugment extends PiscesItem {
+public class PiscesItemAugment extends PiscesItem implements PiscesItemWithStats {
 	protected int[] rating;
 	protected int advanceEXP;
 	protected int advanceSP;
@@ -13,7 +13,6 @@ public class PiscesItemAugment extends PiscesItem {
 	protected byte weight;
 	protected byte slots;
 	protected byte rarity;
-	protected int price;
 
 	public PiscesItemAugment(String name) {
 		super(name);
@@ -82,7 +81,7 @@ public class PiscesItemAugment extends PiscesItem {
 		this.slots=slots;
 	}
 	
-	public byte getSlots() {
+	public int getSlots() {
 		return slots;
 	}
 	
@@ -92,14 +91,6 @@ public class PiscesItemAugment extends PiscesItem {
 	
 	public byte getRarity() {
 		return rarity;
-	}
-	
-	public void setPrice(int price) {
-		this.price=price;
-	}
-	
-	public int getPrice() {
-		return price;
 	}
 	
 	public void setElementalDamage(Element element, double rating) {
@@ -116,5 +107,9 @@ public class PiscesItemAugment extends PiscesItem {
 	
 	public double getElementalResist(Element element) {
 		return this.elementalResist[element.ordinal()];
+	}
+	
+	public void addMe(Inventory inventory) {
+		inventory.addItem(new PiscesInstantiatedItemAugment(this));
 	}
 }

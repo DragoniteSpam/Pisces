@@ -7,6 +7,7 @@ import com.pisces.Settings;
 
 import exceptions.ResourceNotFoundException;
 import gamedata.abilities.PiscesAbility;
+import gamedata.items.PiscesInstantiatedItemEquipment;
 import stuff.EquipTypes;
 import stuff.Stats;
 
@@ -15,7 +16,7 @@ public class PiscesCharacter extends GameData {
 	
 	public static final byte NUMBER_ACTIVE_MOVES=8;
 	
-	private PiscesInstantiatedEquipment[] equip;
+	private PiscesInstantiatedItemEquipment[] equip;
 	
 	private PiscesInstantiatedMove[] activeMoves;
 	private ArrayList<PiscesInstantiatedMove> totalMoves;
@@ -59,7 +60,7 @@ public class PiscesCharacter extends GameData {
 		this.sp=0;
 		this.ap=0;
 
-		this.equip=new PiscesInstantiatedEquipment[EquipTypes.WEAPON.ordinal()];
+		this.equip=new PiscesInstantiatedItemEquipment[EquipTypes.WEAPON.ordinal()];
 		
 		this.activeMoves=new PiscesInstantiatedMove[NUMBER_ACTIVE_MOVES];
 		this.totalMoves=new ArrayList<PiscesInstantiatedMove>();
@@ -74,7 +75,7 @@ public class PiscesCharacter extends GameData {
 		for (PiscesEffect effect : this.effects) {
 			m=m+effect.getStatModifier(stat);
 		}
-		for (PiscesInstantiatedEquipment equip : this.equip) {
+		for (PiscesInstantiatedItemEquipment equip : this.equip) {
 			if (equip!=null) {
 				m=m+equip.getStatRating(stat);
 			}

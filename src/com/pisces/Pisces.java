@@ -46,7 +46,9 @@ import exceptions.TeamException;
 import gamedata.abilities.PiscesAbility;
 import gamedata.abilities.PiscesAbilityShape;
 import gamedata.abilities.PiscesSkillTree;
+import gamedata.items.PiscesItem;
 import gamedata.items.PiscesItemPocket;
+import gamedata.items.PiscesItemWeapon;
 import gamedata.resources.PiscesModel;
 import gamedata.resources.PiscesSound;
 import gamedata.PiscesCharacter;
@@ -57,6 +59,7 @@ import screens.LoadingScreen;
 import screens.PauseScreen;
 import stuff.DebugStates;
 import stuff.GameStates;
+import stuff.ItemPockets;
 import stuff.PiscesContactListener;
 import stuff.PlayStates;
 import WorldObjects.WorldEntity;
@@ -493,11 +496,19 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			player.addTeamMemeber(PiscesCharacter.getByName("Dragonite"));
 		} catch (TeamException e) {
 			e.printStackTrace();
-			System.exit(0);
+			quit();
 		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
-			System.exit(0);
+			quit();
 		}
+		new PiscesItemWeapon("Sword").setPocket(ItemPockets.WEAPON);;
+		try {
+			player.inventory.addItem(PiscesItem.getByName("Sword"));
+		} catch (ResourceNotFoundException e) {
+			e.printStackTrace();
+			quit();
+		}
+		Tools.log(player.inventory.size(ItemPockets.WEAPON)+"");
 		camera.setFollowing(player);
 		camera.setCameraThirdPerson();
 		// camera.setCameraFirstPerson();
@@ -582,14 +593,27 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		return this.debugState;
 	}
 	
+	public PauseScreen getPauseScreen() {
+		return this.pauseScreen;
+	}
+	
 	public void pauseGame() {
 		playState=PlayStates.PAUSED;
 		controller.unlockCursor();
-		pauseScreen.reset();
+		pauseScreen.reset(true);
 	}
 	
 	public void unpauseGame() {
 		playState=PlayStates.PLAYING;
 		controller.lockCursor();
+	}
+	
+	public void toTitle() {
+		
+	}
+	
+	public void quit() {
+		// TODO probably autosave here or something
+		Gdx.app.exit();
 	}
 }

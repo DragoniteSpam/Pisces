@@ -126,6 +126,17 @@ public class Tools {
 	}
 	
 	/**
+	 * Clamps a value.
+	 * @param x	The value to clamp
+	 * @param lower	The lower bounds of the clamped value
+	 * @param upper	The upper bounds of the clamped value
+	 * @return	The clamped value
+	 */
+	public static int clamp(int x, int lower, int upper) {
+		return Math.max(lower, Math.min(upper, x));
+	}
+	
+	/**
 	 * Gets a reference to the log.
 	 * @return a reference to the log
 	 */

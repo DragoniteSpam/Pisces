@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.PiscesController;
+import com.pisces.Tools;
 
 import WorldObjects.WorldEntity;
 import gamedata.resources.PiscesModel;
@@ -25,7 +26,7 @@ public class WorldEntityLight extends WorldEntity {
 	public WorldEntityLight(Vector3 position, Quaternion orientation, Vector3 scale, PiscesModel model, String name) {
 		super(position, orientation, scale, model, name);
 		this.animationController = new AnimationController(this.modelInstance);
-		this.animationController.setAnimation("FlickerAction", -1);
+		this.animationController.setAnimation("Light|Untitled", -1);
 		this.light = null;
 		this.lightPosition=position.cpy();
 		this.lightOffset=new Vector3(0f, 0f, 0f);

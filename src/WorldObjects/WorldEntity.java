@@ -6,21 +6,29 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.PiscesController;
 
 import collisions.PiscesCollisions;
+import gamedata.items.Inventory;
 import gamedata.resources.PiscesModel;
+import stuff.PiscesContactResultCallback;
 
 public class WorldEntity extends WorldObject {
 	protected float xspeed, yspeed, zspeed;
 	protected Vector3 out;
+	ContactResultCallback crCallback;
+	public final Inventory inventory;
 
 	public WorldEntity(Vector3 position, Quaternion orientation, Vector3 scale, PiscesModel model, String name) {
 		super(position, orientation, scale, model, name);
 		xspeed = 0f;
 		yspeed = 0f;
 		zspeed = 0f;
+		
+		crCallback=new PiscesContactResultCallback();
+		inventory=new Inventory();
 	}
 
 	public boolean render(Camera camera, ModelBatch batch, Environment environment, boolean debug) {
@@ -49,13 +57,16 @@ public class WorldEntity extends WorldObject {
 			callback.setRayToWorld(this.position);
 			callback.setRayFromWorld(this.tprevious);
 
-			world.rayTest(this.tprevious, this.position, this.callback);
+			//world.contactTest(this.collisionObject, crCallback);
+			world.performDiscreteCollisionDetection();
+			
+			//world.rayTest(this.tprevious, this.position, this.callback);
 
-			if (callback.hasHit()) {
+			/*if (callback.hasHit()) {
 				System.out.println("Hit something on the X axis");
 				this.position.x = this.tprevious.x + xspeed * callback.getClosestHitFraction();
 				this.tprevious.x = this.position.x;
-			}
+			}*/
 
 			// Y position checking
 
@@ -102,5 +113,10 @@ public class WorldEntity extends WorldObject {
 
 	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {
 		super.updatePost(controller, deltaTime, world);
+	}
+	
+	public void delete() {
+		super.delete();
+		crCallback.dispose();
 	}
 }

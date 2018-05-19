@@ -773,4 +773,16 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public void unlockCursor() {
 		this.lockCursor=false;
 	}
+	
+	public void setMousePosition(float x, float y) {
+		Gdx.input.setCursorPosition((int)x, Gdx.graphics.getHeight()-(int)y);
+		this.mouseX=(int)x;
+		this.mouseY=(int)y;
+	}
+	
+	public void setMousePosition(int x, int y) {
+		Gdx.input.setCursorPosition(x, Gdx.graphics.getHeight()-y);
+		this.mouseX=x;
+		this.mouseY=y;
+	}
 }

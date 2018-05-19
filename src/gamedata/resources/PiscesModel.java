@@ -66,8 +66,8 @@ public class PiscesModel extends GameData {
 		//this.modelCollision.setModel(this.modelVisibleCollision);
 		this.modelCollision=Bullet.obtainStaticNodeShape(this.modelVisibleCollision.nodes);
 		//this.modelCollision=new btBvhTriangleMeshShape(this.modelVisibleCollision.meshParts);
-		this.modelCollision=new btBoxShape(new Vector3(12f, 12f, 12f));
-//		this.modelCollision=new btBvhTriangleMeshShape(this.modelVisibleCollision.nodes);
+		//this.modelCollision=new btBoxShape(new Vector3(12f, 12f, 12f));
+		//this.modelCollision=new btBvhTriangleMeshShape(this.modelVisibleCollision.nodes);
 	}
 	
 	public static PiscesModel get(String name) {

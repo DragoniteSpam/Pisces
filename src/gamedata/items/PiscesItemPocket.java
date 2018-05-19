@@ -29,8 +29,11 @@ public class PiscesItemPocket {
 		all[ItemPockets.TORSO.ordinal()]=new PiscesItemPocket("Torso", null, null);
 		all[ItemPockets.PANTS.ordinal()]=new PiscesItemPocket("Pants", null, null);
 		all[ItemPockets.SHOES.ordinal()]=new PiscesItemPocket("Shoes", null, null);
+		all[ItemPockets.COLLECTABLE.ordinal()]=new PiscesItemPocket("Collectables", null, null);
+		all[ItemPockets.MANUAL.ordinal()]=new PiscesItemPocket("Manuals", null, null);
 		all[ItemPockets.AUGMENT.ordinal()]=new PiscesItemPocket("Augments", null, null);
 		all[ItemPockets.COMPONENT.ordinal()]=new PiscesItemPocket("Components", null, null);
+		all[ItemPockets.MISC.ordinal()]=new PiscesItemPocket("Misc.", null, null);
 		all[ItemPockets.KEY.ordinal()]=new PiscesItemPocket("Keys", null, null);
 	}
 }

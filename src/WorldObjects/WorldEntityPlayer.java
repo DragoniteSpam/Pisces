@@ -48,7 +48,6 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 			}
 			PiscesCamera camera=Pisces.me().getCamera();
 			float deadZone=Pisces.me().getSettings().getControlDeadZone();
-			float sensitivity=Pisces.me().getSettings().getControlSensitivity();
 			if (controller.getLeftStickMagnitude()>deadZone) {
 				float dir=(float) (camera.getDirection()+(controller.getLeftStickDirection())-90f);
 				xspeed=Tools.dcos(dir)*moveSpeed;

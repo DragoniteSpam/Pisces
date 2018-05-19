@@ -7,8 +7,10 @@ public enum ItemPockets {
 	TORSO,
 	PANTS,
 	SHOES,
+	MANUAL,
 	COLLECTABLE,
 	AUGMENT,
 	COMPONENT,
+	MISC,
 	KEY,
 }

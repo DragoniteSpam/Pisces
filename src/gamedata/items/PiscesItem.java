@@ -7,13 +7,16 @@ import com.badlogic.gdx.graphics.Texture;
 import exceptions.ResourceNotFoundException;
 import gamedata.GameData;
 import gamedata.resources.PiscesModel;
+import stuff.ItemPockets;
 
 public class PiscesItem extends GameData {
-	private static HashMap<String, PiscesItem> all=new HashMap<String, PiscesItem>();
+	protected static HashMap<String, PiscesItem> all=new HashMap<String, PiscesItem>();
 	
 	private Texture image;
 	private PiscesModel model;
 	protected boolean required;
+	protected int price;
+	protected ItemPockets pocket;
 
 	public PiscesItem(String name) {
 		super(name);
@@ -31,6 +34,7 @@ public class PiscesItem extends GameData {
 		this.image=null;
 		this.model=null;
 		this.required=false;
+		this.pocket=ItemPockets.KEY;
 		
 		all.put(this.name,  this);
 	}
@@ -59,10 +63,34 @@ public class PiscesItem extends GameData {
 		return this.required;
 	}
 	
+	public void setPrice(int price) {
+		this.price=price;
+	}
+	
+	public int getPrice() {
+		return price;
+	}
+	
+	public void setPocket(ItemPockets pocket) {
+		this.pocket=pocket;
+	}
+	
+	public ItemPockets getPocket() {
+		return this.pocket;
+	}
+	
 	public static PiscesItem getByName(String name) throws ResourceNotFoundException {
 		if (all.containsKey(name)) {
 			return all.get(name);
 		}
 		throw new ResourceNotFoundException("No PiscesSkillTree found with the name "+name);
+	}
+	
+	public void use() {
+		
+	}
+	
+	public void addMe(Inventory inventory) {
+		
 	}
 }
