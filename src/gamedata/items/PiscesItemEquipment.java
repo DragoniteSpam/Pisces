@@ -1,5 +1,7 @@
 package gamedata.items;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import stuff.Element;
 import stuff.Stats;
 
@@ -22,6 +24,12 @@ public class PiscesItemEquipment extends PiscesItem implements PiscesItemWithSta
 
 	public PiscesItemEquipment(String name, int id) {
 		super(name, id);
+		
+		init();
+	}
+	
+	public PiscesItemEquipment(String name, int id, TextureRegion image, TextureRegion grayedImage) {
+		super(name, id, image, grayedImage);
 		
 		init();
 	}

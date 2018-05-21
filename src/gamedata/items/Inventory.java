@@ -2,8 +2,9 @@ package gamedata.items;
 
 import java.util.ArrayList;
 
-import com.pisces.Tools;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
+import pause.PauseScreenInventory;
 import stuff.ItemPockets;
 
 public class Inventory {
@@ -113,6 +114,8 @@ public class Inventory {
 			return misc.size();
 		case KEY:
 			return keys.size();
+		case COMPONENT:
+			return components.size();
 		default:
 			break;
 		}
@@ -154,6 +157,9 @@ public class Inventory {
 			break;
 		case KEY:
 			keys.clear();
+			break;
+		case COMPONENT:
+			components.clear();
 			break;
 		default:
 			break;
@@ -206,5 +212,37 @@ public class Inventory {
 	
 	public ArrayList<PiscesInstantiatedItemMisc> getMisc(){
 		return this.misc;
+	}
+	
+	public ArrayList get(ItemPockets pocket){
+		switch (pocket) {
+		case WEAPON:
+			return weapons;
+		case HAT:
+			return head;
+		case TORSO:
+			return torso;
+		case ARMS:
+			return hands;
+		case PANTS:
+			return pants;
+		case SHOES:
+			return shoes;
+		case AUGMENT:
+			return augments;
+		case COLLECTABLE:
+			return collectables;
+		case MANUAL:
+			return manuals;
+		case MISC:
+			return misc;
+		case KEY:
+			return keys;
+		case COMPONENT:
+			return components;
+		default:
+			break;
+		}
+		return null;
 	}
 }

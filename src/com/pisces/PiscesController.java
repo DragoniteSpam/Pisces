@@ -21,6 +21,7 @@ import com.badlogic.gdx.Input.Keys;
 public class PiscesController implements InputProcessor, ControllerListener {
 	private boolean[] keys;
 	private boolean[] previousKeys;
+	private String[] keyNames;
 	
 	private int keyA, keyB, keyX, keyY, keyL, keyR, keyL2, keyR2, keyLS, keyRS, keyStart, keySelect, keyUp, keyDown,
 			keyLeft, keyRight, keyPadUp, keyPadDown, keyPadLeft, keyPadRight, keyRightUp, keyRightDown, keyRightLeft,
@@ -174,6 +175,43 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		leftStickVertical=0;
 		rightStickHorizontal=0;
 		rightStickVertical=0;
+		
+		keyNames=new String[300];
+		for (int i=0; i<256; i++) {
+			keyNames[i]=Keys.toString(i);
+		}
+		
+		keyNames[MOUSE_LEFT_BUTTON]=Text.I("Mouse LB");
+		keyNames[MOUSE_MIDDLE_BUTTON]=Text.I("Mouse MB");
+		keyNames[MOUSE_RIGHT_BUTTON]=Text.I("Mouse RB");
+		keyNames[MOUSE_UP]=Text.I("Mouse Up");
+		keyNames[MOUSE_DOWN]=Text.I("Mouse Down");
+		keyNames[MOUSE_LEFT]=Text.I("Mouse Left");
+		keyNames[MOUSE_RIGHT]=Text.I("Mouse Right");
+		keyNames[CONTROLLER_A]="A";
+		keyNames[CONTROLLER_B]="B";
+		keyNames[CONTROLLER_X]="X";
+		keyNames[CONTROLLER_Y]="Y";
+		keyNames[CONTROLLER_L]=Text.I("LT");
+		keyNames[CONTROLLER_R]=Text.I("RT");
+		keyNames[CONTROLLER_L2]=Text.I("LB");
+		keyNames[CONTROLLER_R2]=Text.I("RB");
+		keyNames[CONTROLLER_LS]=Text.I("LS");
+		keyNames[CONTROLLER_RS]=Text.I("RS");
+		keyNames[CONTROLLER_START]=Text.I("Start");
+		keyNames[CONTROLLER_SELECT]=Text.I("Back");
+		keyNames[CONTROLLER_UP]=Text.I("Left Up");
+		keyNames[CONTROLLER_DOWN]=Text.I("Left Down");
+		keyNames[CONTROLLER_LEFT]=Text.I("Left Left");
+		keyNames[CONTROLLER_RIGHT]=Text.I("Left Right");
+		keyNames[CONTROLLER_PAD_UP]=Text.I("Pad Up");
+		keyNames[CONTROLLER_PAD_DOWN]=Text.I("Pad Down");
+		keyNames[CONTROLLER_PAD_LEFT]=Text.I("Pad Left");
+		keyNames[CONTROLLER_PAD_RIGHT]=Text.I("Pad Right");
+		keyNames[CONTROLLER_RIGHT_UP]=Text.I("Right Up");
+		keyNames[CONTROLLER_RIGHT_DOWN]=Text.I("Right Down");
+		keyNames[CONTROLLER_RIGHT_LEFT]=Text.I("Right Left");
+		keyNames[CONTROLLER_RIGHT_RIGHT]=Text.I("Right Right");
 		
 	}
 
@@ -784,5 +822,9 @@ public class PiscesController implements InputProcessor, ControllerListener {
 		Gdx.input.setCursorPosition(x, Gdx.graphics.getHeight()-y);
 		this.mouseX=x;
 		this.mouseY=y;
+	}
+	
+	public String getInputName(int input) {
+		return this.keyNames[input];
 	}
 }

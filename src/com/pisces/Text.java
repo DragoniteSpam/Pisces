@@ -25,9 +25,9 @@ public class Text {
 			while ((line=read.readLine())!=null){
 				String[] split=line.split("=");
 				if (split.length==1) {
-					intl.put(split[0],  split[0]);
+					intl.put(split[0], split[0]);
 				} else {
-					intl.put(split[0],  split[1]);
+					intl.put(split[0], split[1]);
 				}
 			}
 			

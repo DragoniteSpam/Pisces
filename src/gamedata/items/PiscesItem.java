@@ -3,6 +3,7 @@ package gamedata.items;
 import java.util.HashMap;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import exceptions.ResourceNotFoundException;
 import gamedata.GameData;
@@ -11,8 +12,9 @@ import stuff.ItemPockets;
 
 public class PiscesItem extends GameData {
 	protected static HashMap<String, PiscesItem> all=new HashMap<String, PiscesItem>();
-	
-	private Texture image;
+
+	private TextureRegion image;
+	private TextureRegion grayedImage;
 	private PiscesModel model;
 	protected boolean required;
 	protected int price;
@@ -30,6 +32,13 @@ public class PiscesItem extends GameData {
 		init();
 	}
 	
+	public PiscesItem(String name, int id, TextureRegion image, TextureRegion grayedImage) {
+		this(name, id);
+		
+		this.image=image;
+		this.grayedImage=grayedImage;
+	}
+	
 	private void init() {
 		this.image=null;
 		this.model=null;
@@ -39,7 +48,7 @@ public class PiscesItem extends GameData {
 		all.put(this.name,  this);
 	}
 	
-	public Texture getImage() {
+	public TextureRegion getImage() {
 		return image;
 	}
 	
@@ -47,8 +56,16 @@ public class PiscesItem extends GameData {
 		return model;
 	}
 	
-	public void setImage(Texture image) {
+	public void setImage(TextureRegion image) {
 		this.image=image;
+	}
+	
+	public void setGrayedImage(TextureRegion grayedImage) {
+		this.grayedImage=grayedImage;
+	}
+	
+	public TextureRegion getGrayedImage() {
+		return this.grayedImage;
 	}
 	
 	public void setModel(PiscesModel model) {

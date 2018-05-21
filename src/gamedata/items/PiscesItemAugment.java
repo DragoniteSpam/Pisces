@@ -1,5 +1,7 @@
 package gamedata.items;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import stuff.Element;
 import stuff.Stats;
 
@@ -22,6 +24,12 @@ public class PiscesItemAugment extends PiscesItem implements PiscesItemWithStats
 
 	public PiscesItemAugment(String name, int id) {
 		super(name, id);
+		
+		init();
+	}
+	
+	public PiscesItemAugment(String name, int id, TextureRegion mainImage, TextureRegion grayedImage) {
+		super(name, id, mainImage, grayedImage);
 		
 		init();
 	}

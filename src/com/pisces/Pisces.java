@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -195,7 +196,8 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		/*
 		 * Assets
 		 */
-
+		
+		overlayTexture=new Texture("../pisces-core/assets/graphics/overlay.png");
 		loadAssets();
 
 		/*
@@ -216,7 +218,6 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		stageDebug = new Stage();
 		stageHUD = new Stage();
 
-		overlayTexture=new Texture("../pisces-core/assets/graphics/overlay.png");
 		pauseScreen = new PauseScreen(overlayTexture);
 		debugScreen = new DebugScreen(overlayTexture);
 		hudScreen = new HUDScreen(overlayTexture);
@@ -429,7 +430,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		loadAssetSounds(Gdx.files.internal("../pisces-core/assets/sounds/"));
 		try {
 			// This is order dependant.
-			PiscesItemPocket.createItemPockets();
+			PiscesItemPocket.createItemPockets(this.overlayTexture);
 			PiscesAbilityShape.createAbilityShapes();
 			PiscesAbility.createAbilities();
 			PiscesSkillTree.createSkillTrees();
@@ -501,14 +502,28 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			e.printStackTrace();
 			quit();
 		}
-		new PiscesItemWeapon("Sword").setPocket(ItemPockets.WEAPON);;
+		TextureRegion sword=new TextureRegion(overlayTexture, 512, 768, 64, 64);
+		TextureRegion naSword=new TextureRegion(overlayTexture, 544, 768, 64, 64);
+		TextureRegion gun=new TextureRegion(overlayTexture, 512, 832, 64, 64);
+		TextureRegion naGun=new TextureRegion(overlayTexture, 544, 832, 64, 64);
+		TextureRegion staff=new TextureRegion(overlayTexture, 512, 896, 64, 64);
+		TextureRegion naStaff=new TextureRegion(overlayTexture, 544, 896, 64, 64);
+		TextureRegion wand=new TextureRegion(overlayTexture, 576, 768, 64, 64);
+		TextureRegion naWand=new TextureRegion(overlayTexture, 608, 768, 64, 64);
+		new PiscesItemWeapon("Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
+		new PiscesItemWeapon("Big Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
+		new PiscesItemWeapon("Gun", -1, gun, naGun).setPocket(ItemPockets.WEAPON);
+		new PiscesItemWeapon("Big Gun", -1, gun, naGun).setPocket(ItemPockets.WEAPON);
 		try {
 			player.inventory.addItem(PiscesItem.getByName("Sword"));
+			player.inventory.addItem(PiscesItem.getByName("Gun"));
+			player.inventory.addItem(PiscesItem.getByName("Big Gun"));
+			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
+			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
 		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
 			quit();
 		}
-		Tools.log(player.inventory.size(ItemPockets.WEAPON)+"");
 		camera.setFollowing(player);
 		camera.setCameraThirdPerson();
 		// camera.setCameraFirstPerson();
