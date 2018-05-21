@@ -1,26 +1,30 @@
 package stuff;
 
 public enum EquipTypes {
-	HEAD,
-	TORSO,
-	ARMS,
-	PANTS,
-	SHOES,
-	WEAPON;
+	HEAD("Head", true),
+	TORSO("Torso", true),
+	ARMS("Arms", true),
+	PANTS("Pants", true),
+	SHOES("Shoes", true),
+	WEAPON("Weapon", false);
 	
-	public static boolean isArmor(EquipTypes type) {
-		switch (type) {
-		case WEAPON:
-			return false;
-		}
-		return true;
+	private boolean isArmor;
+	private String name;
+	
+	EquipTypes(String name, boolean isArmor){
+		this.name=name;
+		this.isArmor=isArmor;
 	}
 	
-	public static boolean isWeapon(EquipTypes type) {
-		switch (type) {
-		case WEAPON:
-			return true;
-		}
-		return false;
+	public boolean isArmor() {
+		return this.isArmor;
+	}
+	
+	public boolean isWeapon() {
+		return !this.isArmor;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

@@ -85,7 +85,7 @@ public class PiscesCharacter extends GameData {
 			m=m+skillTrees[activeSkillTree].getMaxAbility().getEffectValue();
 		}
 		m=1+m/100;
-		if (Stats.isStatic(stat)) {
+		if (stat.getIsStatic()) {
 			return (int)Math.max(baseClass.getStat(stat)*m, 1);
 		}
 		return (int)Math.max((Math.floor(2*baseClass.getStat(stat))+2.5*level)*m, 1);

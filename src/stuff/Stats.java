@@ -1,15 +1,29 @@
 package stuff;
 
 public enum Stats {
-	HP, ATK, DEF, SPA, SPD, AGL, BLK, CRT, LCK;
+	HP("HP", false),
+	ATK("Attack", false),
+	DEF("Defense", false),
+	SPA("Sp. Attack", false),
+	SPD("Sp. Defense", false),
+	AGL("Agility", false),
+	BLK("Block", true),
+	CRT("Critical Rate", true),
+	LCK("Luck", true);
 	
-	public static boolean isStatic(Stats stat) {
-		switch (stat) {
-		case BLK:
-		case CRT:
-		case LCK:
-			return true;
-		}
-		return false;
+	private String name;
+	private boolean isStatic;
+	
+	Stats(String name, boolean isStatic) {
+		this.name=name;
+		this.isStatic=isStatic;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public boolean getIsStatic() {
+		return this.isStatic;
 	}
 }

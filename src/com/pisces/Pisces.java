@@ -517,7 +517,9 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		try {
 			player.inventory.addItem(PiscesItem.getByName("Sword"));
 			player.inventory.addItem(PiscesItem.getByName("Gun"));
-			player.inventory.addItem(PiscesItem.getByName("Big Gun"));
+			for (int i=0; i<28; i++) {
+				player.inventory.addItem(PiscesItem.getByName("Big Gun"));
+			}
 			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
 			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
 		} catch (ResourceNotFoundException e) {
