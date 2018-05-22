@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.pisces.Tools;
 
-import collisions.PiscesCollisionShape;
 import gamedata.GameData;
 
 public class PiscesModel extends GameData {

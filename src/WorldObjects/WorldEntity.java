@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.PiscesController;
 
-import collisions.PiscesCollisions;
 import gamedata.items.Inventory;
 import gamedata.resources.PiscesModel;
 import stuff.PiscesContactResultCallback;

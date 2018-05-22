@@ -1,40 +1,32 @@
 package stuff;
 
 public enum DebugStates {
-	OFF,
-	LOG,
-	OBJECTS,
-	EVENTS,
-	FILE,
-	GAMEDATA;
+	OFF(false, false, true),
+	LOG(false, true, false),
+	OBJECTS(true, true, true),
+	EVENTS(true, true, true),
+	FILE(false, true, false),
+	GAMEDATA(false, true, false);
 	
-	public static boolean freeRayDistance(DebugStates state) {
-		switch (state) {
-		case OFF:
-		case LOG:
-		case FILE:
-		case GAMEDATA:
-			return false;
-		}
-		return true;
+	private boolean freeRayDistance;
+	private boolean isDebugState;
+	private boolean drawWorld;
+	
+	DebugStates(boolean freeRayDistance, boolean isDebugState, boolean drawWorld){
+		this.freeRayDistance=freeRayDistance;
+		this.isDebugState=isDebugState;
+		this.drawWorld=drawWorld;
 	}
 	
-	public static boolean isDebugState(DebugStates state) {
-		switch (state) {
-		case OFF:
-			return false;
-		}
-		return true;
+	public boolean getFreeRayDistance() {
+		return this.freeRayDistance;
 	}
 	
-	public static boolean drawWorld(DebugStates state) {
-		switch (state) {
-		case OFF:
-		case LOG:
-		case OBJECTS:
-		case EVENTS:
-			return true;
-		}
-		return false;
+	public boolean getIsDebugState() {
+		return this.isDebugState;
+	}
+	
+	public boolean getDrawWorld() {
+		return this.drawWorld;
 	}
 }

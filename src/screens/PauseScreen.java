@@ -74,7 +74,8 @@ public class PauseScreen extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		PauseScreenDrawable currentScreen;
+		PauseScreenDrawable currentScreen=null;
+		PiscesController controller=Pisces.me().getController();
 		switch (screen) {
 		case MAIN:
 			drawMainMenu(batch, true);
@@ -129,6 +130,26 @@ public class PauseScreen extends Actor {
 			break;
 		default:
 			break;
+		}
+		
+		float iconWidth = screens.get(0).getIcon().getRegionWidth();
+		float iconHeight = screens.get(0).getIcon().getRegionHeight();
+		
+		if (controller.lRelease()) {
+			if (currentScreen!=null) {
+				currentScreen.reset();
+			}
+			screen=PauseStages.previous(screen);
+			position=(--position+screens.size())%screens.size();
+			controller.setMousePosition(screens.get(position).getX() + iconWidth / 2, 80 + iconHeight / 2);
+		}
+		if (controller.rRelease()) {
+			if (currentScreen!=null) {
+				currentScreen.reset();
+			}
+			screen=PauseStages.next(screen);
+			position=(++position)%screens.size();
+			controller.setMousePosition(screens.get(position).getX() + iconWidth / 2, 80 + iconHeight / 2);
 		}
 	}
 

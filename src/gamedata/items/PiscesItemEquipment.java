@@ -37,8 +37,8 @@ public class PiscesItemEquipment extends PiscesItem implements PiscesItemWithSta
 	private void init() {
 		this.rating=new int[Stats.LCK.ordinal()+1];
 		setRatings(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		this.elementalDamage=new double[Element.EL15.ordinal()];
-		this.elementalResist=new double[Element.EL15.ordinal()];
+		this.elementalDamage=new double[Element.EL15.ordinal()+1];
+		this.elementalResist=new double[Element.EL15.ordinal()+1];
 		this.weight=0;
 		this.slots=0;
 		this.price=0;

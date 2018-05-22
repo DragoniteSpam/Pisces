@@ -22,8 +22,6 @@ import com.pisces.Pisces;
 import com.pisces.PiscesCamera;
 import com.pisces.PiscesController;
 
-import collisions.PiscesCollisionObject;
-import collisions.PiscesCollisions;
 import gamedata.resources.PiscesModel;
 import stuff.CameraProperties;
 

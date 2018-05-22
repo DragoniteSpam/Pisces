@@ -21,7 +21,7 @@ public class PiscesItemManual extends PiscesItem {
 		init();
 	}
 	
-	public PiscesItemManual(String name, int id, TextureRegion mainImage, TextureRegion grayedImage) {
+	public PiscesItemManual(String name, int id, TextureRegion mainImage, TextureRegion grayedImage, PiscesMove move) {
 		super(name, id, mainImage, grayedImage);
 		
 		init();

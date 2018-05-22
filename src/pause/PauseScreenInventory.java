@@ -12,10 +12,12 @@ import com.pisces.Pisces;
 import com.pisces.PiscesController;
 import com.pisces.Text;
 
+import gamedata.PiscesElement;
 import gamedata.items.PiscesInstantiatedItem;
 import gamedata.items.PiscesItem;
 import gamedata.items.PiscesItemPocket;
 import gamedata.items.PiscesItemWithStats;
+import stuff.Element;
 import stuff.ItemPockets;
 import stuff.Stats;
 import stuff.pause.PauseStages;
@@ -86,14 +88,8 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 		int totalPages = pisces.getPlayer().inventory.size(this.currentPocket) / 30;
 
 		font32.setColor(Color.BLACK);
-		font32.draw(batch, Text.I("Page") + (this.currentPage + 1) + "/" + (totalPages + 1), inventoryBackgroundX + 32,
+		font32.draw(batch, Text.I("Page ") + (this.currentPage + 1) + "/" + (totalPages + 1), inventoryBackgroundX + 32,
 				inventoryBackgroundY + 48);
-		// font32.draw(batch, Text.I("Previous Pocket"),
-		// inventoryBackgroundBackgroundX+64,
-		// inventoryBackgroundY+this.inventoryBackground.getRegionHeight()+64);
-
-		// font32.draw(batch, Text.I("Next Pocket"), inventoryBackgroundBackgroundX+64,
-		// inventoryBackgroundY+this.inventoryBackground.getRegionHeight()+64);
 		font32.draw(batch, this.glPrevious, inventoryBackgroundBackgroundX + 64,
 				inventoryBackgroundY + this.inventoryBackground.getRegionHeight() + 128);
 		font32.draw(batch, controller.getInputName(PiscesController.CONTROLLER_L2),
@@ -108,6 +104,7 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 
 		int start = this.currentPage * PER_PAGE;
 		int end = (this.currentPage + 1) * PER_PAGE;
+		@SuppressWarnings("unchecked")
 		ArrayList<PiscesInstantiatedItem> list = pisces.getPlayer().inventory.get(this.currentPocket);
 
 		for (int i = start; i < Math.min(end, list.size()); i++) {
@@ -133,7 +130,7 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 		batch.draw(this.highlightedItem, inventoryBackgroundX + 28 + 72 * (selectedColumn),
 				inventoryBackgroundY + 64 + 80 * (2 - selectedRow));
 
-		final int summaryYBuffer=4;
+		final int summaryYBuffer=8;
 		
 		if (this.currentPage * PER_PAGE + this.currentPageIndex < list.size()) {
 			switch (this.currentPocket) {
@@ -148,10 +145,36 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 				PiscesItemWithStats activeWithStats = (PiscesItemWithStats) active;
 
 				font32.draw(batch, active.getName(), summaryBackgroundX + 64, summaryBackgroundY + 15 * 32-summaryYBuffer);
+				Stats[] statArray=Stats.values();
+				int r=0;
 				for (int i=0; i<=Stats.LCK.ordinal(); i++) {
-					font32.draw(batch, Text.I(Stats.values()[i].getName()), summaryBackgroundX+64, summaryBackgroundY+(14-i)*32-summaryYBuffer);
-					font32.draw(batch, activeWithStats.getRating(Stats.values()[i])+"", summaryBackgroundX+this.summaryBackground.getRegionWidth()-128,
-							summaryBackgroundY+(14-i)*32-summaryYBuffer);
+					if (activeWithStats.getRating(Stats.values()[i])!=0) {
+						font32.draw(batch, Text.I(statArray[i].getName()), summaryBackgroundX+64, summaryBackgroundY+(14-r)*32-summaryYBuffer);
+						font32.draw(batch, activeWithStats.getRating(Stats.values()[i])+"", summaryBackgroundX+this.summaryBackground.getRegionWidth()-128,
+								summaryBackgroundY+(14-r)*32-summaryYBuffer);
+						r++;
+					}
+				}
+				
+				int spot=0;
+				Element[] elements=Element.values();
+				for (int i=0; i<=Element.EL15.ordinal(); i++) {
+					double elementalDamage=activeWithStats.getElementalDamage(elements[i]);
+					double elementalResist=activeWithStats.getElementalResist(elements[i]);
+					if (elementalDamage>0.0) {
+						int col=spot%2;
+						int row=spot/2;
+						batch.draw(PiscesElement.getByIndex(elements[i].ordinal()).getImage(), summaryBackgroundX+col*192+64f, summaryBackgroundY+row*32f, 0f, 0f, 64f, 64f, 0.5f, 0.5f, 0f);
+						font32.draw(batch, Math.floor(elementalDamage*100)+"%", summaryBackgroundX+col*192+128, summaryBackgroundY+(row+1)*32-summaryYBuffer);
+						spot++;
+					}
+					if (elementalResist>0.0) {
+						int col=spot%2;
+						int row=spot/2;
+						batch.draw(PiscesElement.getByIndex(elements[i].ordinal()).getImage(), summaryBackgroundX+col*192+64f, summaryBackgroundY+row*32f, 0f, 0f, 64f, 64f, 0.5f, 0.5f, 0f);
+						font32.draw(batch, Math.floor(elementalResist*100)+"%", summaryBackgroundX+col*192+128, summaryBackgroundY+(row+1)*32-summaryYBuffer);
+						spot++;
+					}
 				}
 				break;
 			case COLLECTABLE:
@@ -161,6 +184,7 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 			case KEY:
 				break;
 			case MANUAL:
+				// Draw the move it improves?
 				break;
 			case MISC:
 				break;
@@ -216,7 +240,7 @@ public class PauseScreenInventory implements PauseScreenDrawable {
 	}
 
 	public void reset() {
-
+		// Noting to do here, since this only goes one screen deep.
 	}
 
 	public TextureRegion getIcon() {

@@ -100,7 +100,7 @@ public class PiscesItem extends GameData {
 		if (all.containsKey(name)) {
 			return all.get(name);
 		}
-		throw new ResourceNotFoundException("No PiscesSkillTree found with the name "+name);
+		throw new ResourceNotFoundException("No PiscesItem found with the name "+name);
 	}
 	
 	public void use() {

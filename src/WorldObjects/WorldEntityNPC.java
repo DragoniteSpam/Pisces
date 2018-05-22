@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
 import com.pisces.PiscesController;
 
-import collisions.PiscesCollisions;
 import gamedata.resources.PiscesModel;
 
 public class WorldEntityNPC extends WorldEntity {

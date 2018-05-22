@@ -41,24 +41,37 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import WorldObjects.lights.WorldEntityLight;
-import collisions.PiscesCollisions;
 import exceptions.ResourceNotFoundException;
 import exceptions.TeamException;
 import gamedata.abilities.PiscesAbility;
 import gamedata.abilities.PiscesAbilityShape;
 import gamedata.abilities.PiscesSkillTree;
 import gamedata.items.PiscesItem;
+import gamedata.items.PiscesItemAugment;
+import gamedata.items.PiscesItemCollectable;
+import gamedata.items.PiscesItemComponent;
+import gamedata.items.PiscesItemHands;
+import gamedata.items.PiscesItemHead;
+import gamedata.items.PiscesItemKey;
+import gamedata.items.PiscesItemManual;
+import gamedata.items.PiscesItemMisc;
+import gamedata.items.PiscesItemPants;
 import gamedata.items.PiscesItemPocket;
+import gamedata.items.PiscesItemShoes;
 import gamedata.items.PiscesItemWeapon;
 import gamedata.resources.PiscesModel;
 import gamedata.resources.PiscesSound;
 import gamedata.PiscesCharacter;
 import gamedata.PiscesClass;
+import gamedata.PiscesEffect;
+import gamedata.PiscesElement;
+import gamedata.PiscesMove;
 import screens.DebugScreen;
 import screens.HUDScreen;
 import screens.LoadingScreen;
 import screens.PauseScreen;
 import stuff.DebugStates;
+import stuff.Element;
 import stuff.GameStates;
 import stuff.ItemPockets;
 import stuff.PiscesContactListener;
@@ -196,8 +209,8 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		/*
 		 * Assets
 		 */
-		
-		overlayTexture=new Texture("../pisces-core/assets/graphics/overlay.png");
+
+		overlayTexture = new Texture("../pisces-core/assets/graphics/overlay.png");
 		loadAssets();
 
 		/*
@@ -305,9 +318,9 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 					controller.lockCursor();
 				}
 			}
-			
+
 			if (controller.startRelease()) {
-				if (playState==PlayStates.PLAYING) {
+				if (playState == PlayStates.PLAYING) {
 					pauseGame();
 				} else {
 					unpauseGame();
@@ -332,13 +345,17 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 				break;
 			case DEBUG:
 				break;
+			case PAUSED:
+				break;
+			default:
+				break;
 			}
 			/*
 			 * The models
 			 */
 
 			int visible = 0;
-			if (DebugStates.drawWorld(debugState)) {
+			if (debugState.getDrawWorld()) {
 				if (controller.get(PiscesController.DEBUG_DRAW_WORLD)) {
 					debugDrawer.begin(camera);
 					world.debugDrawWorld();
@@ -360,9 +377,9 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 			spriteBatch.setProjectionMatrix(orthographic.combined);
 			spriteBatch.begin();
-			if (DebugStates.isDebugState(debugState)) {
+			if (debugState.getIsDebugState()) {
 				stageDebug.draw();
-			} else if (playState==PlayStates.PAUSED) {
+			} else if (playState == PlayStates.PAUSED) {
 				stagePause.draw();
 			} else if (drawHUD) {
 				stageHUD.draw();
@@ -431,6 +448,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		try {
 			// This is order dependant.
 			PiscesItemPocket.createItemPockets(this.overlayTexture);
+			PiscesElement.createAllElements(this.overlayTexture);
 			PiscesAbilityShape.createAbilityShapes();
 			PiscesAbility.createAbilities();
 			PiscesSkillTree.createSkillTrees();
@@ -502,26 +520,69 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			e.printStackTrace();
 			quit();
 		}
-		TextureRegion sword=new TextureRegion(overlayTexture, 512, 768, 64, 64);
-		TextureRegion naSword=new TextureRegion(overlayTexture, 544, 768, 64, 64);
-		TextureRegion gun=new TextureRegion(overlayTexture, 512, 832, 64, 64);
-		TextureRegion naGun=new TextureRegion(overlayTexture, 544, 832, 64, 64);
-		TextureRegion staff=new TextureRegion(overlayTexture, 512, 896, 64, 64);
-		TextureRegion naStaff=new TextureRegion(overlayTexture, 544, 896, 64, 64);
-		TextureRegion wand=new TextureRegion(overlayTexture, 576, 768, 64, 64);
-		TextureRegion naWand=new TextureRegion(overlayTexture, 608, 768, 64, 64);
+		TextureRegion sword = new TextureRegion(overlayTexture, 512, 768, 64, 64);
+		TextureRegion naSword = new TextureRegion(overlayTexture, 576, 768, 64, 64);
+		TextureRegion gun = new TextureRegion(overlayTexture, 512, 832, 64, 64);
+		TextureRegion naGun = new TextureRegion(overlayTexture, 576, 832, 64, 64);
+		TextureRegion staff = new TextureRegion(overlayTexture, 512, 896, 64, 64);
+		TextureRegion naStaff = new TextureRegion(overlayTexture, 576, 896, 64, 64);
+		TextureRegion wand = new TextureRegion(overlayTexture, 640, 768, 64, 64);
+		TextureRegion naWand = new TextureRegion(overlayTexture, 704, 768, 64, 64);
+		TextureRegion imageItem = new TextureRegion(overlayTexture, 768, 768, 64, 64);
+		TextureRegion grayedImageItem = new TextureRegion(overlayTexture, 832, 768, 64, 64);
+
+		TextureRegion imageMoveAvailable = new TextureRegion(overlayTexture);
+		TextureRegion imageMoveUnavailable = new TextureRegion(overlayTexture);
+
+		int[] stabbyPowers = { 10, 15, 20, 25, 30, 35, 40, 45, 50, 55 };
+		double[] stabbyCooldowns = { 10, 9, 8, 7, 6, 5, 4.5, 4, 3.5, 3, 2.5 };
+		int[] stabbyRanges = { 32, 36, 40, 44, 48 , 50, 52, 54, 56, 58 };
+		PiscesEffect effectNone = new PiscesEffect("Default Effect", -1);
+
+		PiscesMove moveStabby = new PiscesMove("Stabby", -1, imageMoveAvailable, imageMoveUnavailable, stabbyPowers,
+				stabbyCooldowns, stabbyRanges, Element.NORMAL, true, effectNone);
+
 		new PiscesItemWeapon("Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
 		new PiscesItemWeapon("Big Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
-		new PiscesItemWeapon("Gun", -1, gun, naGun).setPocket(ItemPockets.WEAPON);
+		PiscesItemWeapon weaponGun = new PiscesItemWeapon("Gun", -1, gun, naGun);
+		weaponGun.setPocket(ItemPockets.WEAPON);
+		weaponGun.setElementalDamage(Element.NORMAL, 0.5);
+		weaponGun.setElementalDamage(Element.FIRE, 0.5);
+		weaponGun.setElementalDamage(Element.WATER, 0.5);
+		weaponGun.setElementalDamage(Element.DARK, 0.5);
+		weaponGun.setElementalDamage(Element.LIGHT, 0.5);
+		weaponGun.setRatings(0, 10, 5, 10, 5, 2, 2, 2, 5, 0, 0, 0);
 		new PiscesItemWeapon("Big Gun", -1, gun, naGun).setPocket(ItemPockets.WEAPON);
+		new PiscesItemCollectable("Pine Cone", -1, imageItem, grayedImageItem);
+		new PiscesItemAugment("Attack+", -1, imageItem, grayedImageItem);
+		new PiscesItemComponent("3/4-inch Screws", -1, imageItem, grayedImageItem);
+		new PiscesItemHands("Oven Mitts", -1, imageItem, grayedImageItem);
+		new PiscesItemKey("Dragonite's Front Door", -1, imageItem, grayedImageItem);
+		new PiscesItemHead("Bicycle Helmet", -1, imageItem, grayedImageItem);
+		new PiscesItemManual("How To Stabby", -1, imageItem, grayedImageItem, moveStabby);
+		new PiscesItemMisc("Dog Bone", -1, imageItem, grayedImageItem);
+		new PiscesItemPants("Boxers", -1, imageItem, grayedImageItem);
+		new PiscesItemShoes("Fuzzy Socks", -1, imageItem, grayedImageItem);
 		try {
 			player.inventory.addItem(PiscesItem.getByName("Sword"));
 			player.inventory.addItem(PiscesItem.getByName("Gun"));
-			for (int i=0; i<28; i++) {
+			for (int i = 0; i < 28; i++) {
 				player.inventory.addItem(PiscesItem.getByName("Big Gun"));
 			}
 			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
 			player.inventory.addItem(PiscesItem.getByName("Big Sword"));
+			for (int i = 0; i < 3; i++) {
+				player.inventory.addItem(PiscesItem.getByName("Pine Cone"));
+			}
+			player.inventory.addItem(PiscesItem.getByName("Stabby+"));
+			player.inventory.addItem(PiscesItem.getByName("3/4-inch Screws"));
+			player.inventory.addItem(PiscesItem.getByName("Oven Mitts"));
+			player.inventory.addItem(PiscesItem.getByName("Dragonite's Front Door"));
+			player.inventory.addItem(PiscesItem.getByName("Bicycle Helmet"));
+			player.inventory.addItem(PiscesItem.getByName("Sword Using 101"));
+			player.inventory.addItem(PiscesItem.getByName("Dog Bone"));
+			player.inventory.addItem(PiscesItem.getByName("Boxers"));
+			player.inventory.addItem(PiscesItem.getByName("Fuzzy Socks"));
 		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
 			quit();
@@ -609,26 +670,26 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	public DebugStates getDebugState() {
 		return this.debugState;
 	}
-	
+
 	public PauseScreen getPauseScreen() {
 		return this.pauseScreen;
 	}
-	
+
 	public void pauseGame() {
-		playState=PlayStates.PAUSED;
+		playState = PlayStates.PAUSED;
 		controller.unlockCursor();
 		pauseScreen.reset(true);
 	}
-	
+
 	public void unpauseGame() {
-		playState=PlayStates.PLAYING;
+		playState = PlayStates.PLAYING;
 		controller.lockCursor();
 	}
-	
+
 	public void toTitle() {
-		
+
 	}
-	
+
 	public void quit() {
 		// TODO probably autosave here or something
 		Gdx.app.exit();

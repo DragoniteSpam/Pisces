@@ -11,7 +11,6 @@ import com.pisces.PiscesCamera;
 import com.pisces.PiscesController;
 import com.pisces.Tools;
 
-import collisions.PiscesCollisions;
 import exceptions.TeamException;
 import gamedata.PiscesCharacter;
 import gamedata.PiscesClass;
@@ -74,7 +73,7 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 		Pisces pisces=Pisces.me();
 		
 		float distance;
-		if (DebugStates.freeRayDistance(pisces.getDebugState())) {
+		if (pisces.getDebugState().getFreeRayDistance()) {
 			distance=1024f;
 		} else {
 			distance=80f;

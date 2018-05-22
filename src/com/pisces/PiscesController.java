@@ -64,6 +64,8 @@ public class PiscesController implements InputProcessor, ControllerListener {
 	public static final int CONTROLLER_RIGHT_LEFT = 285;
 	public static final int CONTROLLER_RIGHT_RIGHT = 286;
 	
+	private static final double Z_THRESHOLD=0.95;
+	
 	public static final int DEBUG_DRAW_WORLD=Keys.F12;
 	public static final int DEBUG_BLOCK_WORLD=Keys.F11;
 
@@ -354,9 +356,9 @@ public class PiscesController implements InputProcessor, ControllerListener {
 				rightStickHorizontal=value*settings.getControlSensitivity();
 				break;
 			case 4:
-				if (value > 0) {
+				if (value > Z_THRESHOLD) {
 					keys[CONTROLLER_L] = true;
-				} else {
+				} else if (value<-Z_THRESHOLD){
 					keys[CONTROLLER_R] = true;
 				}
 				// Z axis - this is binary
