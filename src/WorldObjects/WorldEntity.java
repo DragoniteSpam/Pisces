@@ -53,19 +53,16 @@ public class WorldEntity extends WorldObject {
 			this.position.x = this.position.x + xspeed;
 
 			callback.setCollisionObject(null);
-			callback.setRayToWorld(this.position);
-			callback.setRayFromWorld(this.tprevious);
-
-			//world.contactTest(this.collisionObject, crCallback);
-			world.performDiscreteCollisionDetection();
+			this.fromRay.set(this.tprevious);
+			this.toRay.set(this.position);
 			
-			//world.rayTest(this.tprevious, this.position, this.callback);
+			world.rayTest(this.tprevious, this.position, this.callback);
 
-			/*if (callback.hasHit()) {
+			if (callback.hasHit()) {
 				System.out.println("Hit something on the X axis");
 				this.position.x = this.tprevious.x + xspeed * callback.getClosestHitFraction();
 				this.tprevious.x = this.position.x;
-			}*/
+			}
 
 			// Y position checking
 
@@ -75,8 +72,8 @@ public class WorldEntity extends WorldObject {
 			this.position.z = this.position.z + zspeed;
 
 			callback.setCollisionObject(null);
-			callback.setRayToWorld(this.position);
-			callback.setRayFromWorld(this.tprevious);
+			this.fromRay.set(this.tprevious);
+			this.toRay.set(this.position);
 
 			world.rayTest(this.tprevious, this.position, this.callback);
 

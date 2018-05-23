@@ -66,6 +66,8 @@ public class WorldObject {
 	protected btCollisionObject collisionObject;
 	protected final ClosestNotMeRayResultCallback callback;
 	//protected PiscesCollisionObject collisionObject;
+	protected Vector3 fromRay;
+	protected Vector3 toRay;
 	protected Matrix4 worldTransform;
 	
 	public WorldObject(Vector3 position, Quaternion orientation, Vector3 scale, PiscesModel model, String name) {
@@ -105,6 +107,12 @@ public class WorldObject {
 		
 		this.callback=new ClosestNotMeRayResultCallback(this.collisionObject);
 		this.callback.setClosestHitFraction(1f);
+		
+		this.fromRay=new Vector3();
+		this.toRay=new Vector3();
+		
+		this.callback.setRayFromWorld(this.fromRay);
+		this.callback.setRayToWorld(this.toRay);
 		//this.callback.setCollisionFilterGroup(COLLISION_DEFAULT);
 		//this.callback.setCollisionFilterMask(COLLISION_PRIMARY);
 		

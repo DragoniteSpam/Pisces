@@ -148,6 +148,15 @@ public class PiscesCharacter extends GameData {
 		return this.hp;
 	}
 	
+	public PiscesInstantiatedMove knowsMove(PiscesMove move) {
+		for (PiscesInstantiatedMove m : totalMoves) {
+			if (m.getBaseMove()==move) {
+				return m;
+			}
+		}
+		return null;
+	}
+	
 	public static PiscesCharacter getByName(String name) throws ResourceNotFoundException {
 		if (all.containsKey(name)) {
 			return all.get(name);

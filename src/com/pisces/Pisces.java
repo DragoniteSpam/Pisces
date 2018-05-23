@@ -76,6 +76,7 @@ import stuff.GameStates;
 import stuff.ItemPockets;
 import stuff.PiscesContactListener;
 import stuff.PlayStates;
+import stuff.pause.PauseStages;
 import WorldObjects.WorldEntity;
 import WorldObjects.WorldEntityPlayer;
 import WorldObjects.WorldObject;
@@ -329,7 +330,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 			if (playState == PlayStates.PLAYING && debugState == DebugStates.OFF) {
 				WorldObject.processAll(controller, Gdx.graphics.getDeltaTime(), world);
-				// world.performDiscreteCollisionDetection();
+				//world.performDiscreteCollisionDetection();
 				WorldObject.processAllPost(controller, Gdx.graphics.getDeltaTime(), world);
 			}
 			/*
@@ -487,10 +488,10 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		Array<String> allModels = assets.getAssetNames();
 		for (String name : allModels) {
 			File f = new File(name);
-			if (!f.getName().endsWith("_c.g3db")) {
+			if (!f.getName().endsWith(".c.g3db")) {
 				PiscesModel pm = new PiscesModel(f.getName());
 				pm.setModelVisible(assets.get(name, Model.class));
-				String collisionName = name.replace(".g3db", "_c.g3db");
+				String collisionName = name.replace(".g3db", ".c.g3db");
 				pm.setModelVisibleCollision(assets.get(collisionName, Model.class));
 				pm.autoCollisionShape();
 				if (name.endsWith(".nc.g3db")) {
@@ -502,9 +503,12 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		new WorldEntity(new Vector3(96f, 0f, 64f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
 				PiscesModel.get("barrel.g3db"), "Barrel");
 		new WorldEntityAutoAnimate(new Vector3(256f, 0f, 128f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
-				PiscesModel.get("windmill.g3db"), "Windmill");
+				PiscesModel.get("windmill.g3db"), "Windmill", "Default Take");
 		WorldEntityLight light = new WorldEntityLight(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0),
 				new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
+		
+		new WorldEntityAutoAnimate(new Vector3(128f, 0f, -128f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
+				PiscesModel.get("chest.g3db"), "Treasure Chest", "chest.top|chest.topAction");
 		light.setLightColor(Color.WHITE);
 		light.setLightIntensity(1024f);
 		light.setLightOffset(0f, 60f, 0f);
@@ -541,6 +545,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 		PiscesMove moveStabby = new PiscesMove("Stabby", -1, imageMoveAvailable, imageMoveUnavailable, stabbyPowers,
 				stabbyCooldowns, stabbyRanges, Element.NORMAL, true, effectNone);
+		moveStabby.setSummary("You stab your opponent with the tip of your sword. Repeatedly.");
 
 		new PiscesItemWeapon("Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
 		new PiscesItemWeapon("Big Sword", -1, sword, naSword).setPocket(ItemPockets.WEAPON);
@@ -559,7 +564,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 		new PiscesItemHands("Oven Mitts", -1, imageItem, grayedImageItem);
 		new PiscesItemKey("Dragonite's Front Door", -1, imageItem, grayedImageItem);
 		new PiscesItemHead("Bicycle Helmet", -1, imageItem, grayedImageItem);
-		new PiscesItemManual("How To Stabby", -1, imageItem, grayedImageItem, moveStabby);
+		new PiscesItemManual("Skill Book: Stabby", -1, imageItem, grayedImageItem, moveStabby).setMove(moveStabby);
 		new PiscesItemMisc("Dog Bone", -1, imageItem, grayedImageItem);
 		new PiscesItemPants("Boxers", -1, imageItem, grayedImageItem);
 		new PiscesItemShoes("Fuzzy Socks", -1, imageItem, grayedImageItem);
@@ -574,12 +579,12 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 			for (int i = 0; i < 3; i++) {
 				player.inventory.addItem(PiscesItem.getByName("Pine Cone"));
 			}
-			player.inventory.addItem(PiscesItem.getByName("Stabby+"));
+			player.inventory.addItem(PiscesItem.getByName("Attack+"));
 			player.inventory.addItem(PiscesItem.getByName("3/4-inch Screws"));
 			player.inventory.addItem(PiscesItem.getByName("Oven Mitts"));
 			player.inventory.addItem(PiscesItem.getByName("Dragonite's Front Door"));
 			player.inventory.addItem(PiscesItem.getByName("Bicycle Helmet"));
-			player.inventory.addItem(PiscesItem.getByName("Sword Using 101"));
+			player.inventory.addItem(PiscesItem.getByName("Skill Book: Stabby"));
 			player.inventory.addItem(PiscesItem.getByName("Dog Bone"));
 			player.inventory.addItem(PiscesItem.getByName("Boxers"));
 			player.inventory.addItem(PiscesItem.getByName("Fuzzy Socks"));
@@ -673,6 +678,10 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 	public PauseScreen getPauseScreen() {
 		return this.pauseScreen;
+	}
+	
+	public void setPauseScreen(PauseStages stage) {
+		pauseScreen.setPauseScreen(stage);
 	}
 
 	public void pauseGame() {

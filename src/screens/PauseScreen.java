@@ -71,6 +71,10 @@ public class PauseScreen extends Actor {
 
 		reset(true);
 	}
+	
+	public void setPauseScreen(PauseStages screen) {
+		this.screen=screen;
+	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {

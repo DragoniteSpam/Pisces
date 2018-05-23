@@ -18,12 +18,14 @@ import gamedata.resources.PiscesModel;
 public class WorldEntityAutoAnimate extends WorldEntity {
 
 	private float speed;
+	private String animationName;
 	
-	public WorldEntityAutoAnimate(Vector3 position, Quaternion orientation, Vector3 scale, PiscesModel model, String name) {
+	public WorldEntityAutoAnimate(Vector3 position, Quaternion orientation, Vector3 scale, PiscesModel model, String name, String animationName) {
 		super(position, orientation, scale, model, name);
 		this.speed=1;
 		this.animationController = new AnimationController(this.modelInstance);
-		this.animationController.setAnimation("Default Take", -1, this.speed, null);
+		this.animationController.setAnimation(animationName, -1, this.speed, null);
+		this.animationName=animationName;
 	}
 
 	public boolean render(Camera camera, ModelBatch batch, Environment environment, boolean debug) {
@@ -37,7 +39,7 @@ public class WorldEntityAutoAnimate extends WorldEntity {
 	
 	public void setAnimationSpeed(float speed) {
 		this.speed=speed;
-		this.animationController.setAnimation("Default Take", -1, speed, null);
+		this.animationController.setAnimation(this.animationName, -1, speed, null);
 	}
 	
 	public float getAnimationSpeed() {

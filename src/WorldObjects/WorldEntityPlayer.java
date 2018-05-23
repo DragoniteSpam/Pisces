@@ -14,6 +14,8 @@ import com.pisces.Tools;
 import exceptions.TeamException;
 import gamedata.PiscesCharacter;
 import gamedata.PiscesClass;
+import gamedata.PiscesInstantiatedMove;
+import gamedata.PiscesMove;
 import gamedata.resources.PiscesModel;
 import stuff.DebugStates;
 
@@ -68,7 +70,15 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 			}
 		}
 		
+		/*
+		 * Super movement
+		 */
+		
 		super.update(controller, deltaTime, world);
+		
+		/*
+		 * Camera raycast
+		 */
 		
 		Pisces pisces=Pisces.me();
 		
@@ -79,7 +89,7 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 			distance=80f;
 		}
 		
-		/*callback.setCollisionObject(null);
+		callback.setCollisionObject(null);
 		Ray pickRay=pisces.getCamera().getPickRay(pisces.getController().getMouseX(), pisces.getController().getMouseY());
 		pickRay.direction.scl(distance).add(pisces.getCamera().getFrom());
 		callback.setRayFromWorld(pisces.getCamera().getFrom());
@@ -89,7 +99,7 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 		
 		if (callback.hasHit()) {
 			System.out.println("Raycasted something: "+WorldObject.getByID(callback.getCollisionObject().getUserValue()));
-		}*/
+		}
 	}
 	
 	public void addTeamMemeber(PiscesCharacter character) throws TeamException {
@@ -116,4 +126,12 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 		return team.size();
 	}
 	
+	public PiscesInstantiatedMove knowsMove(PiscesMove move) {
+		for (PiscesCharacter character : team) {
+			if (character.knowsMove(move)!=null) {
+				return character.knowsMove(move);
+			}
+		}
+		return null;
+	}
 }
