@@ -113,8 +113,8 @@ public class WorldObject {
 		
 		this.callback.setRayFromWorld(this.fromRay);
 		this.callback.setRayToWorld(this.toRay);
-		//this.callback.setCollisionFilterGroup(COLLISION_DEFAULT);
-		//this.callback.setCollisionFilterMask(COLLISION_PRIMARY);
+		this.callback.setCollisionFilterGroup(COLLISION_DEFAULT);
+		this.callback.setCollisionFilterMask(COLLISION_PRIMARY);
 		
 		/*this.collisionObject=new PiscesCollisionObject(this.model.getCollisionModel(), COLLISION_PRIMARY, this.id);
 		this.collisionObject.position=position;
@@ -222,7 +222,7 @@ public class WorldObject {
 		for (WorldObject object : all) {
 			if (!(camera.getTarget()==object&&camera.getPOV()==CameraProperties.CAMERA_FIRST_PERSON)) {
 				if (object.render(camera, batch, environment, false)) {
-					visible++;					
+					visible++;
 				}
 			}
 		}
@@ -236,7 +236,7 @@ public class WorldObject {
 		for (WorldObject object : all) {
 			if (!(camera.getTarget()==object&&camera.getPOV()==CameraProperties.CAMERA_FIRST_PERSON)) {
 				if (object.render(camera, batch, environment, true)) {
-					visible++;					
+					visible++;
 				}
 			}
 		}
@@ -244,7 +244,7 @@ public class WorldObject {
 		return visible;
 	}
 	
-	public static void processAll(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public static void processAll(PiscesController controller, float deltaTime, btCollisionWorld world) {
 		for (WorldObject object : all) {
 			if (object.alive) {
 				object.setPrevious();
@@ -253,7 +253,7 @@ public class WorldObject {
 		}
 	}
 	
-	public static void processAllPost(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public static void processAllPost(PiscesController controller, float deltaTime, btCollisionWorld world) {
 		for (WorldObject object : all) {
 			if (object.alive) {
 				object.updatePost(controller, deltaTime, world);

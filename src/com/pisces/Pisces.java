@@ -330,7 +330,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 			if (playState == PlayStates.PLAYING && debugState == DebugStates.OFF) {
 				WorldObject.processAll(controller, Gdx.graphics.getDeltaTime(), world);
-				//world.performDiscreteCollisionDetection();
+				// world.performDiscreteCollisionDetection();
 				WorldObject.processAllPost(controller, Gdx.graphics.getDeltaTime(), world);
 			}
 			/*
@@ -506,7 +506,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 				PiscesModel.get("windmill.g3db"), "Windmill", "Default Take");
 		WorldEntityLight light = new WorldEntityLight(new Vector3(64f, 0f, 64f), new Quaternion(0, 0, 0, 0),
 				new Vector3(1f, 1f, 1f), PiscesModel.get("lamp.g3db"), "Lamp");
-		
+
 		new WorldEntityAutoAnimate(new Vector3(128f, 0f, -128f), new Quaternion(0, 0, 0, 0), new Vector3(1f, 1f, 1f),
 				PiscesModel.get("chest.g3db"), "Treasure Chest", "chest.top|chest.topAction");
 		light.setLightColor(Color.WHITE);
@@ -540,7 +540,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 
 		int[] stabbyPowers = { 10, 15, 20, 25, 30, 35, 40, 45, 50, 55 };
 		double[] stabbyCooldowns = { 10, 9, 8, 7, 6, 5, 4.5, 4, 3.5, 3, 2.5 };
-		int[] stabbyRanges = { 32, 36, 40, 44, 48 , 50, 52, 54, 56, 58 };
+		int[] stabbyRanges = { 32, 36, 40, 44, 48, 50, 52, 54, 56, 58 };
 		PiscesEffect effectNone = new PiscesEffect("Default Effect", -1);
 
 		PiscesMove moveStabby = new PiscesMove("Stabby", -1, imageMoveAvailable, imageMoveUnavailable, stabbyPowers,
@@ -679,7 +679,7 @@ public final class Pisces extends ApplicationAdapter implements ApplicationListe
 	public PauseScreen getPauseScreen() {
 		return this.pauseScreen;
 	}
-	
+
 	public void setPauseScreen(PauseStages stage) {
 		pauseScreen.setPauseScreen(stage);
 	}

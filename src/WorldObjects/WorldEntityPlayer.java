@@ -35,7 +35,7 @@ public final class WorldEntityPlayer extends WorldEntityNPC {
 		this.team=new ArrayList<PiscesCharacter>();
 	}
 	
-	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public void update(PiscesController controller, float deltaTime, btCollisionWorld world) {
 		xspeed=0;
 		zspeed=0;
 		float moveSpeed=(float)(SPEED_WALK*deltaTime);

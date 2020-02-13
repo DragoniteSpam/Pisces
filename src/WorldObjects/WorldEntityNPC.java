@@ -16,7 +16,7 @@ public class WorldEntityNPC extends WorldEntity {
 		super(position, orientation, scale, model, name);
 	}
 	
-	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public void update(PiscesController controller, float deltaTime, btCollisionWorld world) {
 		super.update(controller,  deltaTime,  world);
 	}
 

@@ -44,13 +44,13 @@ public class WorldEntity extends WorldObject {
 		return false;
 	}
 
-	public void update(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public void update(PiscesController controller, float deltaTime, btCollisionWorld world) {
 
 		if (Math.abs(xspeed) > 0 || Math.abs(yspeed) > 0 || Math.abs(zspeed) > 0) {
 			// X position checking
 
 			this.tprevious.set(this.position.x, this.position.y, this.position.z);
-			this.position.x = this.position.x + xspeed;
+			this.position.x = this.position.x + xspeed*deltaTime;
 
 			callback.setCollisionObject(null);
 			this.fromRay.set(this.tprevious);
@@ -69,7 +69,7 @@ public class WorldEntity extends WorldObject {
 			// Z position checking
 
 			this.tprevious.set(this.position.x, this.position.y, this.position.z);
-			this.position.z = this.position.z + zspeed;
+			this.position.z = this.position.z + zspeed*deltaTime;
 
 			callback.setCollisionObject(null);
 			this.fromRay.set(this.tprevious);
@@ -107,7 +107,7 @@ public class WorldEntity extends WorldObject {
 		super.update(controller, deltaTime, world);
 	}
 
-	public void updatePost(PiscesController controller, double deltaTime, btCollisionWorld world) {
+	public void updatePost(PiscesController controller, float deltaTime, btCollisionWorld world) {
 		super.updatePost(controller, deltaTime, world);
 	}
 	
